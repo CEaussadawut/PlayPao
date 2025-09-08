@@ -1,12 +1,13 @@
+using Npgsql;
+using DotNetEnv;
+using PlayPao.Config;
 using PlayPao.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
-
 
 app.UseHttpsRedirection();
 app.UseRouting();
@@ -20,38 +21,19 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Auth}/{action=Login}/{id?}")
+    .WithStaticAssets();
+
 app.UseMiddleware<AuthenticationMiddleware>();
 
+Env.Load();
 
-// app.Use(async (context, next) =>
-// {
-//     var path = context.Request.Path;
+app.UseExceptionHandler("/Home/Error");
+app.UseHsts();
 
+var connectionString = DatabaseConfig.GetConnectionString(builder.Configuration, app.Environment);
+await using var conn = new NpgsqlConnection(connectionString);
 
-//     if (path.HasValue && path.Value.StartsWith("/Auth"))
-//     {
-//         Console.WriteLine("Auth ");
-//     }
-
-//     // if (!string.IsNullOrWhiteSpace(cultureQuery))
-//     // {
-//     //     var culture = new CultureInfo(cultureQuery);
-
-//     //     CultureInfo.CurrentCulture = culture;
-//     //     CultureInfo.CurrentUICulture = culture;
-//     // }
-
-//     // Call the next delegate/middleware in the pipeline.
-//     await next(context);
-// });
-
-if (app.Environment.IsDevelopment())
-{
-    app.Run();
-}
-else
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-    app.Run();
-}
+app.Run();

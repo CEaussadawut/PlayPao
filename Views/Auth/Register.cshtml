@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "Sing Up";
+}
+
+<div class="flex flex-col h-screen justify-center items-center gap-2">
+    <h1>Play<span class="text-theme">Pao</span></h1>
+
+    <br>
+
+    <form action="" class="flex flex-col gap-2 items-center">
+        <h1>Create Account</h1>
+
+        <input class="input-theme" type="text" id="username" placeholder="Username" />
+
+        <input class="input-theme" type="password" id="password" placeholder="Password" />
+
+        <input class="input-theme" type="confirm_password" id="confirm_password" placeholder="Confirm Password" />
+
+        <div class="flex gap-1 ml-auto">
+            <input type="checkbox" id="remember" name="remember" value="IsRemember">
+            <label for="remember">Remember me</label>
+        </div>
+
+        <button class="button-theme text-xl " type="submit">Sing Up!</button>
+    </form>
+
+    <p>Already have an account? <span onclick="ok()" class="text-theme underline">Sign in</span></p>
+</div>
