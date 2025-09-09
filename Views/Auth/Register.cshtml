@@ -1,9 +1,13 @@
 @{
+    Layout = "~/Views/Shared/Auth/_Layout.cshtml";
     ViewData["Title"] = "Sing Up";
 }
 
 <div class="flex flex-col h-screen justify-center items-center gap-2">
-    <h1>Play<span class="text-theme">Pao</span></h1>
+    <div class="flex gap-1 items-center">
+        <img src="~/images/icon.png" alt="icon" class="icon-theme">
+        <h1>Play<span class="text-theme">Pao</span></h1>
+    </div>
 
     <br>
 
@@ -16,13 +20,8 @@
 
         <input class="input-theme" type="confirm_password" id="confirm_password" placeholder="Confirm Password" />
 
-        <div class="flex gap-1 ml-auto">
-            <input type="checkbox" id="remember" name="remember" value="IsRemember">
-            <label for="remember">Remember me</label>
-        </div>
-
-        <button class="button-theme text-xl " type="submit">Sing Up!</button>
+        <button class="button-theme text-lg" type="submit">Sing Up!</button>
     </form>
 
-    <p>Already have an account? <span onclick="ok()" class="text-theme underline">Sign in</span></p>
+    <p>Already have an account? <a asp-controller="Auth" asp-action="Login" class="text-theme">Sign in</a></p>
 </div>

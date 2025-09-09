@@ -1,6 +1,6 @@
+using PlayPao.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using PlayPao.Models;
 
 namespace PlayPao.Controllers;
 

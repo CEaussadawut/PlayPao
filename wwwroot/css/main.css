@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
 * {
   margin: 0;
 	padding: 0;
@@ -5,7 +7,12 @@
 }
 
 html {
-  font-size: 14px;
+  /* font-size: 14px; */
+  font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:"wdth" 100;
 }
 
 @media (min-width: 768px) {
@@ -18,6 +25,13 @@ input[type=text]:focus {
   border: 2px solid #FF742B;
 }
 
+.icon-theme {
+  height: 64px;
+  width: 64px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgb(0 0 0 / 0.2);
+}
+
 .text-theme {
   color: #FF742B;
 }
@@ -26,7 +40,6 @@ input[type=text]:focus {
   background-color: #FF742B;
 }
 
-
 .button-theme {
   width: 380px;
   color: #FFF;
@@ -34,6 +47,9 @@ input[type=text]:focus {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 
+  padding-left: 1rem;
+  padding-right: 1rem;
+  
   border-radius: 8px;
   background-color: #FF742B;
 }
@@ -103,26 +119,6 @@ input[type=text]:focus {
 
 .gap-8 {
   gap: 8rem;
-}
-
-.text-xm {
-  font-size: 0.75rem;
-}
-
-.text-sm {
-  font-size: 0.875rem;
-}
-
-.text-base {
-  font-size: 1rem;
-}
-
-.text-lg {
-  font-size: 1.125rem;
-}
-
-.text-xl {
-  font-size: 1.25rem;
 }
 
 .underline {
