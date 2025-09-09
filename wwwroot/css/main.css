@@ -40,6 +40,11 @@ input[type=text]:focus {
   background-color: #FF742B;
 }
 
+.button-white {
+  background-color: #FFF;
+  box-shadow: 0 0 5px rgb(0 0 0 / 0.2);
+}
+
 .button-theme {
   width: 380px;
   color: #FFF;
@@ -101,7 +106,7 @@ input[type=text]:focus {
   align-items: end;
 }
 
-.gap-0.5 {
+.gap-0\.5 {
   gap: 0.5rem;
 }
 
@@ -123,4 +128,22 @@ input[type=text]:focus {
 
 .underline {
   text-decoration: underline;
+}
+
+.p-1 {
+  padding: 1rem;
+}
+
+.px-1 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.py-0\.5 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
 }

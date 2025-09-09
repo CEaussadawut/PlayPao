@@ -14,12 +14,20 @@
 
 <body>
     <main role="main" class="relative">
-        <div class="absolute top-2 left-2">
-            <a asp-controller="Home" asp-action="Index">Back</a>
-        </div>
+        <a asp-controller="Home" asp-action="Index" style="color: black;">
+            <div class="flex absolute top-2 left-2 gap-0.5 button-white px-1 py-0.5 rounded-lg">
+                <i data-lucide="arrow-left"></i>
+                <span>Back</span>
+            </div>
+        </a>
 
         @RenderBody()
     </main>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
