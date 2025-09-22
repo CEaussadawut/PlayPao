@@ -482,3 +482,13 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+
+# START Ruler Generated Files
+/.github/copilot-instructions.md
+/.github/copilot-instructions.md.bak
+/.kilocode/rules/ruler_kilocode_instructions.md
+/.kilocode/rules/ruler_kilocode_instructions.md.bak
+/AGENTS.md
+/AGENTS.md.bak
+# END Ruler Generated Files
