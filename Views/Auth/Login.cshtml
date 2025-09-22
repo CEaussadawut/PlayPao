@@ -11,15 +11,20 @@
 
     <br>
 
-    <form action="" class="flex flex-col gap-2 items-center">
+    <form asp-action="Login" method="post" class="flex flex-col gap-2 items-center">
         <h1>Login</h1>
 
-        <input class="input-theme" type="text" id="username" placeholder="Username" />
+        @if (ViewBag.Error != null)
+        {
+            <div class="text-red-500">@ViewBag.Error</div>
+        }
 
-        <input class="input-theme" type="password" id="password" placeholder="Password" />
+        <input class="input-theme" type="text" id="username" name="username" placeholder="Username" />
+
+        <input class="input-theme" type="password" id="password" name="password" placeholder="Password" />
 
         <div class="flex gap-1 ml-auto">
-            <input type="checkbox" id="remember" name="remember" value="IsRemember">
+            <input type="checkbox" id="remember" name="remember" value="true">
             <label for="remember">Remember me</label>
         </div>
 

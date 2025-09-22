@@ -11,16 +11,22 @@
 
     <br>
 
-    <form action="" class="flex flex-col gap-2 items-center">
+    <form asp-action="Register" method="post" class="flex flex-col gap-2 items-center">
         <h1>Create Account</h1>
 
-        <input class="input-theme" type="text" id="username" placeholder="Username" />
+        @if (ViewBag.Error != null)
+        {
+            <div class="text-red-500">@ViewBag.Error</div>
+        }
 
-        <input class="input-theme" type="password" id="password" placeholder="Password" />
+        <input class="input-theme" type="text" id="username" name="username" placeholder="Username" />
 
-        <input class="input-theme" type="confirm_password" id="confirm_password" placeholder="Confirm Password" />
+        <input class="input-theme" type="password" id="password" name="password" placeholder="Password" />
 
-        <button class="button-theme text-lg" type="submit">Sing Up!</button>
+        <input class="input-theme" type="password" id="confirm_password" name="confirm_password"
+            placeholder="Confirm Password" />
+
+        <button class="button-theme text-lg" type="submit">Sign Up!</button>
     </form>
 
     <p>Already have an account? <a asp-controller="Auth" asp-action="Login" class="text-theme">Sign in</a></p>

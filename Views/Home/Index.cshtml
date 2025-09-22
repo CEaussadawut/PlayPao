@@ -6,6 +6,14 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 
-    <a asp-controller="Auth" asp-action="Login">Login</a>
-    <a asp-controller="Auth" asp-action="Register">Register</a>
+    @if (Context.Session.GetString("User") != null)
+    {
+        <div class="mb-2">Hello, <b>@Context.Session.GetString("User")</b>!</div>
+        <a asp-controller="Auth" asp-action="Logout">Logout</a>
+    }
+    else
+    {
+        <a asp-controller="Auth" asp-action="Login">Login</a>
+        <a asp-controller="Auth" asp-action="Register">Register</a>
+    }
 </div>
