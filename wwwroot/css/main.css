@@ -86,6 +86,10 @@ input[type=text]:focus {
   flex-direction: row;
 }
 
+.justify-between {
+  justify-content: space-between;
+}
+
 .h-screen {
   height: 100vh;
 }
@@ -130,6 +134,10 @@ input[type=text]:focus {
   text-decoration: underline;
 }
 
+.no-underline {
+  text-decoration: none;
+}
+
 .p-1 {
   padding: 1rem;
 }
@@ -142,6 +150,10 @@ input[type=text]:focus {
 .py-0\.5 {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+}
+
+.rounded-full {
+  border-radius: 100%;
 }
 
 .rounded-lg {

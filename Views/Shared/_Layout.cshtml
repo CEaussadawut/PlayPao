@@ -7,33 +7,48 @@
     <title>@ViewData["Title"] - PlayPao</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/base/_height.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/base/_position.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/base/_typography.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PlayPao.styles.css" asp-append-version="true" />
-    <style>
-        header {
-            width: 250px;
-            padding: 16px;
-        }
-
-        main {
-            width: 100%;
-        }
-
-        aside {
-            width: 250px;
-            padding: 16px;
-        }
-    </style>
 </head>
 
 <body class="flex">
-    <header>
-        <nav class="flex flex-col">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PlayPao</a>
-            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <header class="h-screen flex flex-col justify-between">
+        <a asp-controller="Home" asp-action="Index" class="p-1 no-underline">
+            <div class="flex gap-0.5 items-center">
+                <img src="~/images/icon.png" alt="icon" class="icon-theme">
+                <h2>Play<span class="text-theme">Pao</span></h2>
+            </div>
+        </a>
+
+        <nav class="flex flex-col p-1 gap-1">
+            <a asp-controller="Home" asp-action="Index" class="flex gap-0.5">
+                <i data-lucide="home"></i>
+                <span>Home</span>
+            </a>
+            <a asp-controller="Home" asp-action="Bookmark" class="flex gap-0.5">
+                <i data-lucide="bookmark-check"></i>
+                <span>Bookmark</span>
+            </a>
+            <a asp-controller="Home" asp-action="Ticket" class="flex gap-0.5">
+                <i data-lucide="ticket-check"></i>
+                <span>Ticket</span>
+            </a>
+            <a asp-controller="Home" asp-action="AboutUs" class="flex gap-0.5">
+                <i data-lucide="ellipsis"></i>
+                <span>About us</span>
+            </a>
+            <br>
+            <button>Create Event</button>
         </nav>
+
+        <a href="">
+            <div class="flex items-center gap-0.5 p-1">
+                <img src="https://avatars.githubusercontent.com/u/53619535?v=4" alt="profile" class="rounded-full h-2">
+                <p>whyzotee</p>
+            </div>
+        </a>
     </header>
 
     <main role="main">
@@ -47,8 +62,16 @@
     </footer> *@
 
     <aside>
-        <p>OK</p>
+        <div class="flex items-center justify-between">
+            <p>Upcoming</p>
+            <a asp-controller="Home" asp-action="Index" class="text-theme">See All</a>
+        </div>
     </aside>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
