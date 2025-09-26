@@ -1,0 +1,30 @@
+@{
+    Layout = "~/Views/Shared/Auth/_Layout.cshtml";
+    ViewData["Title"] = "Create Event";
+}
+
+
+<div class="flex flex-col gap-2 items-center">
+    <h1>Create Event</h1>
+    <form asp-action="CreateEvent" method="post" class="flex flex-col gap-2 items-right">
+        @if (ViewBag.Error != null)
+        {
+            <div class="text-red-500">@ViewBag.Error</div>
+        }
+        <input class="input-theme-large" type="text" id="title" name="title" placeholder="Title" />
+        <input class="input-theme-image" type="file" id="imageUpload" name="image" accept="image/*"
+            placeholder="image" />
+        <input class="input-theme-description" type="text" id="description" name="description"
+            placeholder="Description" />
+        <input class="input-theme-large" type="text" id="member" name="member" placeholder="Enter Number" />
+        <input class="input-theme-large" type="date" id="date" name="date" placeholder="Date" />
+        <h5>Time Start</h5>
+        <input class="input-theme-large" type="time" id="time" name="time" placeholder="Time Start" />
+        <h5>Time End</h5>
+        <input class="input-theme-large" type="time" id="endtime" name="endtime" placeholder="Time End" />
+        <input class="input-theme-large" type="text" id="location" name="location" placeholder="Location" />
+        <button class="button-theme-small  text-lg" type="submit">Create Event!</button>
+
+    </form>
+
+</div>
