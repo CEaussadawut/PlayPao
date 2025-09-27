@@ -22,6 +22,11 @@ public class EventController : Controller
     {
         return View();
     }
+    public IActionResult DetailMockup()
+    {
+        return View("Detail");
+    }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

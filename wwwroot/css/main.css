@@ -222,3 +222,78 @@ input[type=text]:focus {
 .rounded-lg {
   border-radius: 0.5rem;
 }
+
+
+.event-detail {
+  padding: 2rem;
+}
+
+.event-detail h2 {
+  margin-bottom: 1rem;
+}
+
+.event-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.event-card {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.event-img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.btn-join {
+  background: #FF742B;
+  color: #fff;
+  border-radius: 25px;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+.chat-box {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.chat-messages {
+  height: 200px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  border: 1px solid #eee;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.chat-input {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chat-input input {
+  flex: 1;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+}
+
+.chat-input button {
+  background: #FF742B;
+  color: #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border: none;
+  cursor: pointer;
+}
