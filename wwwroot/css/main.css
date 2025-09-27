@@ -2,8 +2,8 @@
 
 * {
   margin: 0;
-	padding: 0;
-	border: 0;
+  padding: 0;
+  border: 0;
 }
 
 html {
@@ -12,7 +12,7 @@ html {
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
-  font-variation-settings:"wdth" 100;
+  font-variation-settings: "wdth" 100;
 }
 
 @media (min-width: 768px) {
@@ -48,13 +48,41 @@ input[type=text]:focus {
 .button-theme {
   width: 380px;
   color: #FFF;
-  
+
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 
   padding-left: 1rem;
   padding-right: 1rem;
-  
+
+  border-radius: 8px;
+  background-color: #FF742B;
+}
+
+.button-theme-large {
+  width: 720px;
+  color: #FFF;
+
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  border-radius: 8px;
+  background-color: #FF742B;
+}
+
+.button-theme-sm {
+  width: 200px;
+  color: #FFF;
+
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+
+  padding-left: 1rem;
+  padding-right: 1rem;
+
   border-radius: 8px;
   background-color: #FF742B;
 }
@@ -69,6 +97,41 @@ input[type=text]:focus {
   border: 2px solid #FFF;
   box-shadow: 0 0 5px rgb(0 0 0 / 0.2);
 }
+
+.input-theme-large {
+  width: 720px;
+  height: 40px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 8px;
+  outline: none;
+  border: 2px solid #FFF;
+  box-shadow: 0 0 5px rgb(0 0 0 / 0.2);
+}
+
+.input-theme-description {
+  width: 720px;
+  height: 120px;
+  padding: 1rem;
+  border-radius: 8px;
+  outline: none;
+  border: 2px solid #FFF;
+  box-shadow: 0 0 5px rgb(0 0 0 / 0.2);
+  resize: none;
+}
+
+.input-theme-image {
+  width: 720px;
+  height: 40px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 8px;
+  outline: none;
+  border: 2px solid #FFF;
+  box-shadow: 0 0 5px rgb(0 0 0 / 0.2);
+}
+
+
 
 .ml-auto {
   margin-left: auto;
