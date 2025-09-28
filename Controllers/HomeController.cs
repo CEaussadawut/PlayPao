@@ -38,6 +38,16 @@ public class HomeController : Controller
         return View();
     }
 
+    public IActionResult Profile()
+    {
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString("User")))
+            return RedirectToAction("Login", "Auth");
+
+        ViewBag.Name = HttpContext.Session.GetString("User");
+        ViewBag.Phone = "123-456-7890";
+        return View();
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

@@ -43,12 +43,12 @@
             <button>Create Event</button>
         </nav>
 
-        <a href="">
-            <div class="flex items-center gap-0.5 p-1">
+        <div class="flex items-center gap-0.5 p-1">
+            <a asp-controller="Home" asp-action="Profile" class="inline-block" style="cursor:pointer;">
                 <img src="https://avatars.githubusercontent.com/u/53619535?v=4" alt="profile" class="rounded-full h-2">
-                <p>whyzotee</p>
-            </div>
-        </a>
+            </a>
+            <p>@(Context.Session.GetString("User") ?? "Guest")</p>
+        </div>
     </header>
 
     <main role="main">
