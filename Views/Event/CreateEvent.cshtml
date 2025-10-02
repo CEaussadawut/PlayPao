@@ -6,7 +6,7 @@
 
 <div class="flex flex-col gap-2 items-center">
     <h1>Create Event</h1>
-    <form asp-action="CreateEvent" method="post" class="flex flex-col gap-2 items-right">
+    <form asp-action="CreateEvent" method="post" enctype="multipart/form-data" class="flex flex-col gap-2 items-right">
         @if (ViewBag.Error != null)
         {
             <div class="text-red-500">@ViewBag.Error</div>
