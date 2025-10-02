@@ -1,0 +1,54 @@
+@{
+    ViewData["Title"] = "Profile";
+
+    var name = (string?)ViewBag.Name ?? Context.Session.GetString("User") ?? "Guest";
+    var phone = (string?)ViewBag.Phone ?? "090-000-0000";
+    var avatar = (string?)ViewBag.AvatarUrl ?? "https://avatars.githubusercontent.com/u/53619535?v=4";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Profile</h1>
+
+    @if (Context.Session.GetString("User") != null)
+    {
+        <div class="mb-2">Hello, <b>@Context.Session.GetString("User")</b>!</div>
+        <a asp-controller="Auth" asp-action="Logout">Logout</a>
+    }
+    else
+    {
+        <a asp-controller="Auth" asp-action="Login">Login</a>
+        <a asp-controller="Auth" asp-action="Register">Register</a>
+    }
+
+    <div style="
+        display:flex; align-items:center; gap:16px;
+        box-shadow:0 0 5px rgb(0 0 0 / 0.2);
+        padding:1rem; border-radius:12px; margin-top:1rem;">
+
+        <img src="@avatar" alt="profile photo"
+            style="height:120px; width:120px; border-radius:999px; object-fit:cover;">
+
+        <div style="text-align:left; width:100%; margin-right:8px">
+            <h3 style="margin:0 0 4px 0;">@name</h3>
+            <div style="color:#6b7280; font-size:14px;">Phone</div>
+            <div style="font-weight:600; font-size:18px;">@phone</div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; justify-content:space-between; align-items:flex-end;">
+            <a class="px-2 py-0.5 text-md" asp-controller="Home" asp-action="EditProfile"
+                style="background-color:#FF742B; color:white; border-radius:2rem; padding:.5rem 1rem; text-decoration:none;">
+                Edit
+            </a>
+        </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
+        <div style="display:flex; box-shadow:0 0 5px rgb(0 0 0 / 0.2); padding:1rem; border-radius:12px;">
+            <div style="text-align:left; width:100%; margin-right:8px">
+                <h5 style="color:#FF742B; margin:0 0 6px 0;">Contact</h5>
+                <p style="margin:0;">โทร: @phone</p>
+                <p style="margin:0;">อีเมล: @(ViewBag.Email ?? "example@playpao.com")</p>
+            </div>
+        </div>
+    </div>
+</div>
