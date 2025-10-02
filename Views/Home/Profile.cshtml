@@ -9,17 +9,6 @@
 <div class="text-center">
     <h1 class="display-4">Profile</h1>
 
-    @if (Context.Session.GetString("User") != null)
-    {
-        <div class="mb-2">Hello, <b>@Context.Session.GetString("User")</b>!</div>
-        <a asp-controller="Auth" asp-action="Logout">Logout</a>
-    }
-    else
-    {
-        <a asp-controller="Auth" asp-action="Login">Login</a>
-        <a asp-controller="Auth" asp-action="Register">Register</a>
-    }
-
     <div style="
         display:flex; align-items:center; gap:16px;
         box-shadow:0 0 5px rgb(0 0 0 / 0.2);
@@ -51,4 +40,17 @@
             </div>
         </div>
     </div>
+
+    <br>
+
+    @if (Context.Session.GetString("User") != null)
+    {
+        <div class="mb-2">Hello, <b>@Context.Session.GetString("User")</b>!</div>
+        <a asp-controller="Auth" asp-action="Logout">Logout</a>
+    }
+    else
+    {
+        <a asp-controller="Auth" asp-action="Login">Login</a>
+        <a asp-controller="Auth" asp-action="Register">Register</a>
+    }
 </div>

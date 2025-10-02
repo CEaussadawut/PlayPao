@@ -7,6 +7,7 @@
     <title>@ViewData["Title"] - PlayPao</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/base/_width.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/base/_height.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/base/_position.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/base/_typography.css" asp-append-version="true" />
@@ -42,16 +43,16 @@
             <br>
             <button>Create Event</button>
         </nav>
-
-        <div class="flex items-center gap-0.5 p-1">
-            <a asp-controller="Home" asp-action="Profile" class="inline-block" style="cursor:pointer;">
+        <a asp-controller="Home" asp-action="Profile" class="inline-block" style="cursor:pointer;">
+            <div class="flex items-center gap-0.5 p-1">
                 <img src="https://avatars.githubusercontent.com/u/53619535?v=4" alt="profile" class="rounded-full h-2">
-            </a>
-            <p>@(Context.Session.GetString("User") ?? "Guest")</p>
-        </div>
+
+                <p>@(Context.Session.GetString("User") ?? "Guest")</p>
+            </div>
+        </a>
     </header>
 
-    <main role="main">
+    <main role="main" style="height: calc(100vh - 2rem); overflow-y: auto; overflow-x: hidden;">
         @RenderBody()
     </main>
 
