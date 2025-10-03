@@ -4,5 +4,16 @@
 // Write your JavaScript code.
 function ok() {
     console.log("OK");
-
 }
+
+// Notification dropdown toggle
+document.addEventListener('DOMContentLoaded', function () {
+    const toggle = document.getElementById('notification-toggle');
+    const dropdown = document.getElementById('notification-dropdown');
+    if (toggle && dropdown) {
+        toggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            dropdown.classList.toggle('hidden');
+        });
+    }
+});
