@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    var currentUser = Context.Session.GetString("User");
 }
 @using System.Globalization
 @model IEnumerable<Event>
@@ -7,15 +8,45 @@
 <div class="flex flex-col gap-1 text-center">
     <div class="flex items-center gap-1">
         <input class="input-theme-full" type="text" placeholder="Search">
+<<<<<<< Updated upstream
         <a href="#">
             <i data-lucide="bell"></i>
         </a>
+=======
+        <div class="relative">
+            <a href="#" id="notification-toggle" style="padding-top: 8px; color: black;">
+                <i data-lucide="bell"></i>
+            </a>
+            @* 
+            <div id="notification-dropdown"
+                class="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-md shadow-lg hidden z-10">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold mb-2">Notifications</h3>
+                    <div class="space-y-2">
+                        <div class="p-2 bg-gray-100 rounded">
+                            <p class="text-sm">New event: Tech Conference 2023</p>
+                            <p class="text-xs text-gray-500">2 hours ago</p>
+                        </div>
+                        <div class="p-2 bg-gray-100 rounded">
+                            <p class="text-sm">Reminder: Meeting at 3 PM</p>
+                            <p class="text-xs text-gray-500">1 day ago</p>
+                        </div>
+                        <div class="p-2 bg-gray-100 rounded">
+                            <p class="text-sm">Update: Profile picture changed</p>
+                            <p class="text-xs text-gray-500">3 days ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div> *@
+        </div>
+>>>>>>> Stashed changes
     </div>
 
     @if (Model != null && Model.Any())
     {
         @foreach (var eventItem in Model)
         {
+<<<<<<< Updated upstream
             <div style="display: flex; box-shadow: 0 0 5px rgb(0 0 0 / 0.2); padding: 1rem; border-radius: 0.5rem;">
                 <img src="@(string.IsNullOrEmpty(eventItem.ImagePath) ? "https://i.ytimg.com/vi/N_Fb4x-OAzE/oardefault.jpg" : eventItem.ImagePath)"
                     alt="" style="height: 110px; width: 200px; border-radius: 8px;">
@@ -25,14 +56,39 @@
                         @eventItem.EndTime.Hours.ToString("D2"):@eventItem.EndTime.Minutes.ToString("D2")</h5>
                     <h3>@eventItem.Title</h3>
                     <p>@eventItem.Description</p>
+=======
+            <a href="@Url.Action("Detail", "Event", new { id = eventItem.Id })" style="text-decoration: none; color: inherit;">
+                <div style="display: flex; box-shadow: 0 0 5px rgb(0 0 0 / 0.2); padding: 1rem; border-radius: 0.5rem;">
+                    <img src="@(string.IsNullOrEmpty(eventItem.ImagePath) ? "https://i.ytimg.com/vi/N_Fb4x-OAzE/oardefault.jpg" : eventItem.ImagePath)"
+                        alt="" style="height: 110px; width: 200px; border-radius: 8px;">
+                    <div
+                        style="padding-top: 8px; padding-bottom: 8px; padding-right: 14px; padding-left: 14px; gap: 8px; width: 100%; margin-right: 8px">
+                        <h5 style="color: #FF742B">@eventItem.Date.ToString("dddd, MMMM d, yyyy")
+                            @eventItem.Time.Hours.ToString("D2"):@eventItem.Time.Minutes.ToString("D2") -
+                            @eventItem.EndTime.Hours.ToString("D2"):@eventItem.EndTime.Minutes.ToString("D2")</h5>
+                        <h3>@eventItem.Title</h3>
+                        <p>@eventItem.Description</p>
+                        <p style="font-size: 0.8em; color: #666;">Created by: @eventItem.Creator</p>
+                    </div>
+                    <div class="flex flex-col justify-between items-end">
+                        <i data-lucide="bookmark"></i>
+                        <p style="width: 126px; text-align: right;">@eventItem.CurrentMembers / @eventItem.Member</p>
+                        <div class="flex gap-2">
+                         @if (!string.IsNullOrEmpty(currentUser) && currentUser != eventItem.Creator)
+                         {
+                            <button class="px-2 py-1 text-sm"
+                                style="background-color: #FF742B; color: white; border-radius: 2rem;">join</button>
+                         }
+                             else if (currentUser == eventItem.Creator)
+                         {
+                            <span style="font-style: italic; color: #666; width: 126px; text-align: right;">Created by you</span>
+                        }
+                        </div>
+                       
+                    </div>
+>>>>>>> Stashed changes
                 </div>
-                <div class="flex flex-col justify-between items-end">
-                    <i data-lucide="bookmark"></i>
-                    <p>@eventItem.CurrentMembers / @eventItem.Member</p>
-                    <button class="px-2 py-1 text-md"
-                        style="background-color: #FF742B; color: white; border-radius: 2rem;">join</button>
-                </div>
-            </div>
+            </a>
         }
     }
     else

@@ -1,0 +1,54 @@
+@{
+    ViewData["Title"] = "My Events";
+}
+@using System.Globalization
+@model IEnumerable<Event>
+
+<div class="flex flex-col gap-1 text-center">
+    <h1>My Events</h1>
+    <a href="@Url.Action("CreateEvent", "Event")" class="btn-create">Create New Event</a>
+
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var eventItem in Model)
+        {
+            <a href="@Url.Action("Detail", "Event", new { id = eventItem.Id })" style="text-decoration: none; color: inherit;">
+                <div style="display: flex; box-shadow: 0 0 5px rgb(0 0 0 / 0.2); padding: 1rem; border-radius: 0.5rem;">
+                    <img src="@(string.IsNullOrEmpty(eventItem.ImagePath) ? "https://i.ytimg.com/vi/N_Fb4x-OAzE/oardefault.jpg" : eventItem.ImagePath)"
+                        alt="" style="height: 110px; width: 200px; border-radius: 8px;">
+                    <div
+                        style="padding-top: 8px; padding-bottom: 8px; padding-right: 14px; padding-left: 14px; gap: 8px; width: 100%; margin-right: 8px">
+                        <h5 style="color: #FF742B">@eventItem.Date.ToString("dddd, MMMM d, yyyy")
+                            @eventItem.Time.Hours.ToString("D2"):@eventItem.Time.Minutes.ToString("D2") -
+                            @eventItem.EndTime.Hours.ToString("D2"):@eventItem.EndTime.Minutes.ToString("D2")</h5>
+                        <h3>@eventItem.Title</h3>
+                        <p>@eventItem.Description</p>
+                        <p style="font-size: 0.8em; color: #666;">Location: @eventItem.Location</p>
+                    </div>
+                    <div class="flex flex-col justify-between items-end">
+                        <i data-lucide="bookmark"></i>
+                        <p>@eventItem.CurrentMembers / @eventItem.Member</p>
+                        <div class="flex gap-2">
+                                <form method="post" action="@Url.Action("Edit", "Event", new { id = eventItem.Id })"
+                                  style="display: inline;">
+                                <button type="submit" class="px-2 py-1 text-sm"
+                                        style="background-color: #007bff; color: white; border-radius: 2rem; border: none; cursor: pointer;">Edit</button>
+                                </form>
+                                <form method="post" action="@Url.Action("Delete", "Event", new { id = eventItem.Id })"
+                                  style="display: inline;"
+                                  onsubmit="return confirm('Are you sure you want to delete this event?')">
+                                <button type="submit" class="px-2 py-1 text-sm"
+                                        style="background-color: #dc3545; color: white; border-radius: 2rem; border: none; cursor: pointer;">Delete</button>
+                                </form>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        }
+    }
+    else
+    {
+        <p>You haven't created any events yet.</p>
+        <a href="@Url.Action("CreateEvent", "Event")" class="btn-create">Create Your First Event</a>
+    }
+</div>

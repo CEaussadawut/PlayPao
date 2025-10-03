@@ -1,26 +1,50 @@
 @{
-    ViewData["Title"] = "Event Detail (Mockup)";
+    ViewData["Title"] = "Event Detail";
+    var currentUser = Context.Session.GetString("User");
+    var isCreator = currentUser == Model.Creator;
 }
+@model Event
 
 <div class="event-detail">
     <a href="/" class="btn-back">← Back</a>
 
-    <h2>Splendor บังไม่ได้มีแค่ตัง หัวใจก็มีทำไมยังทิ้งกัน ขาดเธอไม่ได้</h2>
+    <h2>@Model.Title</h2>
+    <p class="event-creator">Created by: @Model.Creator</p>
 
     <div class="event-content">
         <!-- Event Card -->
         <div class="event-card">
-            <img src="https://i.ytimg.com/vi/N_Fb4x-OAzE/oardefault.jpg" alt=""
-                style="height: 110px; width: 200px; border-radius: 8px;  ">
+            <img src="@(string.IsNullOrEmpty(Model.ImagePath) ? "https://i.ytimg.com/vi/N_Fb4x-OAzE/oardefault.jpg" : Model.ImagePath)"
+                alt="" style="height: 110px; width: 200px; border-radius: 8px;">
             <div class="event-info">
-                <p class="event-date" style="color: #FF742B">Mon Sep 9th 2025 &#64; Hootd</p>
-                <p>
-                    This course is for UX designers, product managers,
-                    service designers and business consultants looking to
-                    learn how to develop product ideas – fast.
+                <p class="event-date" style="color: #FF742B">
+                    @Model.Date.ToString("dddd, MMMM d, yyyy")
+                    @Model.Time.Hours.ToString("D2"):@Model.Time.Minutes.ToString("D2") -
+                    @Model.EndTime.Hours.ToString("D2"):@Model.EndTime.Minutes.ToString("D2")
                 </p>
-                <p>จำนวนผู้เข้าร่วม: 5 / 6</p>
-                <button class="btn-join">Join</button>
+                <p>@Model.Description</p>
+                <p>จำนวนผู้เข้าร่วม: @Model.CurrentMembers / @Model.Member</p>
+                @if (!string.IsNullOrEmpty(currentUser) && !isCreator)
+                {
+                    <button class="btn-join">Join</button>
+                }
+                @if (isCreator)
+                {
+                    <p style="font-style: italic; color: #666;">You created this event</p>
+                    <div class="flex gap-2 mt-2">
+                        <form method="post" action="@Url.Action("Edit", "Event", new { id = Model.Id })"
+                              style="display: inline;")>
+                            <button type="submit" class="px-3 py-1 text-sm"
+                                    style="background-color: #007bff; color: white; border-radius: 2rem; border: none; cursor: pointer;">Edit</button>
+                        </form>
+                        <form method="post" action="@Url.Action("Delete", "Event", new { id = Model.Id })"
+                              style="display: inline;"
+                              onsubmit="return confirm('Are you sure you want to delete this event?')">
+                            <button type="submit" class="px-3 py-1 text-sm"
+                                    style="background-color: #dc3545; color: white; border-radius: 2rem; border: none; cursor: pointer;">Delete</button>
+                        </form>
+                    </div>
+                }
             </div>
         </div>
 
@@ -28,10 +52,7 @@
         <div class="chat-box">
             <h4>Chat</h4>
             <div class="chat-messages">
-                <div><b>whyzotee</b>: สวัสดีวันจันทร์</div>
-                <div><b>Speleless</b>: กินข้าวไหม</div>
-                <div><b>แพท</b>: ไปกินกระเพรา</div>
-                <div><b>CEuasadawut</b>: ทีมหมูหยก</div>
+                <!-- Chat messages would go here -->
             </div>
             <form class="chat-input">
                 <input type="text" placeholder="Type..." />
