@@ -15,7 +15,8 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        return View();
+        var events = EventController.GetEvents();
+        return View(events);
     }
 
     public IActionResult Privacy()
