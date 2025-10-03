@@ -56,22 +56,19 @@
         </nav>
 
         <a asp-controller="Home" asp-action="Profile" class="inline-block" style="text-decoration:none; color:black;">
-            @if (Context.Session.GetString("User") == null)
-            {
-                <div class="flex items-center gap-0.5 p-1">
-                    <img src="~/images/profile.png" alt="profile" class="rounded-full h-2 w-2" style="object-fit: cover;">
-                    <p>Not login</p>
-                </div>
+            @{
+                var userName = Context.Session.GetString("User");
+                var avatarSess = Context.Session.GetString("AvatarUrl");
+                var avatarSrc = Url.Content(string.IsNullOrWhiteSpace(avatarSess) ? "~/images/profile.png" : avatarSess);
+                var isLoggedIn = !string.IsNullOrWhiteSpace(userName);
             }
-            else
-            {
-                <div class="flex items-center gap-0.5 p-1">
-                    <img src="https://avatars.githubusercontent.com/u/53619535?v=4" alt="profile" class="rounded-full h-2">
-
-                    <p>@(Context.Session.GetString("User") ?? "Guest")</p>
-                </div>
-            }
+            <div class="flex items-center gap-0.5 p-1">
+                <img src="@avatarSrc" alt="profile" class="rounded-full h-2 w-2" style="object-fit:cover;">
+                <p>@(isLoggedIn? userName : "Not login")</p>
+            </div>
         </a>
+
+
     </header>
 
     <main role="main" style="height: calc(100vh - 2rem); overflow-y: auto; overflow-x: hidden;">

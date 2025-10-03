@@ -41,12 +41,62 @@ public class HomeController : Controller
 
     public IActionResult Profile()
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString("User")))
-            return RedirectToAction("Login", "Auth");
+        var user = HttpContext.Session.GetString("User");
+        if (string.IsNullOrWhiteSpace(user)) return RedirectToAction("Login", "Auth");
 
-        ViewBag.Name = HttpContext.Session.GetString("User");
-        ViewBag.Phone = "123-456-7890";
+        var p = AuthController.Profiles.TryGetValue(user, out var prof)
+            ? prof
+            : new UserProfile { UserName = user, DisplayName = user };
+
+        ViewBag.Name = p.DisplayName;
+        ViewBag.Phone = p.Phone;
+        ViewBag.Email = p.Email;
+        ViewBag.AvatarUrl = p.AvatarUrl;
         return View();
+    }
+
+    [HttpGet]
+    public IActionResult EditProfile()
+    {
+        var user = HttpContext.Session.GetString("User");
+        if (string.IsNullOrWhiteSpace(user)) return RedirectToAction("Login", "Auth");
+
+        if (!AuthController.Profiles.TryGetValue(user, out var p))
+            p = new UserProfile { UserName = user, DisplayName = user };
+
+        ViewBag.Name = p.DisplayName;
+        ViewBag.Phone = p.Phone;
+        ViewBag.Email = p.Email;
+        ViewBag.AvatarUrl = p.AvatarUrl;
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult EditProfile(string name, string phone, string avatarUrl, string email)
+    {
+        var user = HttpContext.Session.GetString("User");
+        if (string.IsNullOrWhiteSpace(user)) return RedirectToAction("Login", "Auth");
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            ViewBag.Error = "Name is required.";
+            ViewBag.Name = name; ViewBag.Phone = phone; ViewBag.Email = email;
+            ViewBag.AvatarUrl = string.IsNullOrWhiteSpace(avatarUrl) ? "/images/profile.png" : avatarUrl;
+            return View();
+        }
+
+        if (!AuthController.Profiles.TryGetValue(user, out var p))
+            p = AuthController.Profiles[user] = new UserProfile { UserName = user, DisplayName = user };
+
+        p.DisplayName = name;
+        p.Phone = phone ?? "";
+        p.Email = email ?? "";
+        p.AvatarUrl = string.IsNullOrWhiteSpace(avatarUrl) ? "/images/profile.png" : avatarUrl;
+
+        HttpContext.Session.SetString("AvatarUrl", p.AvatarUrl);
+
+        return RedirectToAction(nameof(Profile));
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
