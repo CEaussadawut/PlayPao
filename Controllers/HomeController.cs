@@ -17,10 +17,16 @@ public class HomeController : Controller
         _logger = logger;
     }
 
-    public IActionResult Index()
+    public IActionResult Index(string search)
     {
         var events = EventController.GetEvents();
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            events = events.Where(e => e.Title.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                                       e.Description.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
         ViewBag.JoinRequests = EventController.GetJoinRequests();
+        ViewBag.Search = search;
         return View(events);
     }
 

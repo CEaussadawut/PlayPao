@@ -17,6 +17,8 @@ public class EventController : Controller
     private static int _nextJoinRequestId = 1;
     private static List<Notification> _notifications = new List<Notification>();
     private static int _nextNotificationId = 1;
+    private static List<ChatMessage> _chatMessages = new List<ChatMessage>();
+    private static int _nextChatMessageId = 1;
 
     // Keep Ticket Per User
     public static readonly Dictionary<string, List<Ticket>> TicketsByUser = new();
@@ -160,6 +162,7 @@ public class EventController : Controller
             return NotFound();
         }
         ViewBag.JoinRequests = _joinRequests;
+        ViewBag.ChatMessages = _chatMessages.Where(m => m.EventId == id).OrderBy(m => m.Timestamp).ToList();
         var joinedUsernames = new HashSet<string>(eventItem.JoinedUsers);
         joinedUsernames.Add(eventItem.Creator!);
         var profiles = joinedUsernames
@@ -378,6 +381,48 @@ public class EventController : Controller
 
         TempData["toast"] = "Joined successfully!";
         return RedirectToAction("Ticket", "Home");
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult SendMessage(int eventId, string message)
+    {
+        var user = HttpContext.Session.GetString("User");
+        if (string.IsNullOrWhiteSpace(user))
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        var eventItem = _events.FirstOrDefault(e => e.Id == eventId);
+        if (eventItem == null)
+        {
+            return NotFound();
+        }
+
+        // Check if user can chat (creator or joined)
+        if (eventItem.Creator != user && !eventItem.JoinedUsers.Contains(user))
+        {
+            TempData["Message"] = "You must be a member of this event to chat.";
+            return RedirectToAction("Detail", new { id = eventId });
+        }
+
+        if (string.IsNullOrWhiteSpace(message))
+        {
+            return RedirectToAction("Detail", new { id = eventId });
+        }
+
+        var chatMessage = new ChatMessage
+        {
+            Id = _nextChatMessageId++,
+            EventId = eventId,
+            User = user,
+            Message = message,
+            Timestamp = DateTime.Now
+        };
+
+        _chatMessages.Add(chatMessage);
+
+        return RedirectToAction("Detail", new { id = eventId });
     }
 
     public static Event? FindEvent(int id) => _events.FirstOrDefault(e => e.Id == id);
