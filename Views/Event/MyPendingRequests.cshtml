@@ -1,0 +1,26 @@
+@using PlayPao.Models
+@model List<PendingRequestViewModel>
+@{
+    ViewData["Title"] = "My Pending Join Requests";
+}
+
+<h2>My Pending Join Requests</h2>
+
+@if (Model.Any())
+{
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li>
+                <strong>@item.Event.Title</strong> - Requested on @item.Request.RequestedAt.ToString("g")
+                <a href="@Url.Action("Detail", "Event", new { id = item.Event.Id })">View Event</a>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No pending requests.</p>
+}
+
+<a href="/">Back to Home</a>

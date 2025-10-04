@@ -13,6 +13,10 @@ public class EventController : Controller
     // Static list to store events (in production, use a database)
     private static List<Event> _events = new List<Event>();
     private static int _nextId = 1;
+    private static List<EventJoinRequest> _joinRequests = new List<EventJoinRequest>();
+    private static int _nextJoinRequestId = 1;
+    private static List<Notification> _notifications = new List<Notification>();
+    private static int _nextNotificationId = 1;
 
     // Keep Ticket Per User
     public static readonly Dictionary<string, List<Ticket>> TicketsByUser = new();
@@ -22,6 +26,55 @@ public class EventController : Controller
     public EventController(ILogger<EventController> logger)
     {
         _logger = logger;
+    }
+
+    [HttpPost]
+    public IActionResult RequestJoin(int eventId)
+    {
+        var currentUser = HttpContext.Session.GetString("User");
+        if (string.IsNullOrEmpty(currentUser))
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        var eventItem = _events.FirstOrDefault(e => e.Id == eventId);
+        if (eventItem == null)
+        {
+            return NotFound();
+        }
+
+        // Check if already requested or joined
+        if (_joinRequests.Any(r => r.EventId == eventId && r.User == currentUser) ||
+            eventItem.JoinedUsers.Contains(currentUser))
+        {
+            TempData["Message"] = "You have already requested to join or are already a member.";
+            return RedirectToAction("Detail", new { id = eventId });
+        }
+
+        var request = new EventJoinRequest
+        {
+            Id = _nextJoinRequestId++,
+            EventId = eventId,
+            User = currentUser,
+            Status = "Pending",
+            RequestedAt = DateTime.Now
+        };
+
+        _joinRequests.Add(request);
+
+        // Create notification for event creator
+        var notification = new Notification
+        {
+            Id = _nextNotificationId++,
+            User = eventItem.Creator,
+            Message = $"{currentUser} requested to join your event '{eventItem.Title}'.",
+            Type = "join_request",
+            EventId = eventId
+        };
+        _notifications.Add(notification);
+
+        TempData["Message"] = "Join request sent. Waiting for approval.";
+        return RedirectToAction("Detail", new { id = eventId });
     }
 
     public IActionResult CreateEvent()
@@ -106,7 +159,36 @@ public class EventController : Controller
         {
             return NotFound();
         }
+        ViewBag.JoinRequests = _joinRequests;
+        var joinedUsernames = new HashSet<string>(eventItem.JoinedUsers);
+        joinedUsernames.Add(eventItem.Creator!);
+        var profiles = joinedUsernames
+            .Select(u => AuthController.Profiles.TryGetValue(u, out var p) ? p : null)
+            .Where(p => p != null)
+            .ToList();
+        // Sort so creator is first
+        profiles = profiles.OrderByDescending(p => p.UserName == eventItem.Creator!).ToList();
+        ViewBag.JoinedUserProfiles = profiles;
         return View(eventItem);
+    }
+
+    public IActionResult PendingRequests(int eventId)
+    {
+        var currentUser = HttpContext.Session.GetString("User");
+        if (string.IsNullOrEmpty(currentUser))
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        var eventItem = _events.FirstOrDefault(e => e.Id == eventId);
+        if (eventItem == null || eventItem.Creator != currentUser)
+        {
+            return Forbid();
+        }
+
+        var pendingRequests = _joinRequests.Where(r => r.EventId == eventId && r.Status == "Pending").ToList();
+        ViewBag.Event = eventItem;
+        return View(pendingRequests);
     }
 
     public IActionResult MyEvents()
@@ -200,7 +282,7 @@ public class EventController : Controller
         {
             var fileName = $"{eventItem.Id}_{image.FileName}";
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "events", fileName);
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
@@ -300,10 +382,162 @@ public class EventController : Controller
 
     public static Event? FindEvent(int id) => _events.FirstOrDefault(e => e.Id == id);
 
+    [HttpPost]
+    public IActionResult ApproveJoin(int requestId)
+    {
+        var currentUser = HttpContext.Session.GetString("User");
+        if (string.IsNullOrEmpty(currentUser))
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        var request = _joinRequests.FirstOrDefault(r => r.Id == requestId);
+        if (request == null)
+        {
+            return NotFound();
+        }
+
+        var eventItem = _events.FirstOrDefault(e => e.Id == request.EventId);
+        if (eventItem == null || eventItem.Creator != currentUser)
+        {
+            return Forbid();
+        }
+
+        if (eventItem.CurrentMembers >= eventItem.Member)
+        {
+            TempData["Error"] = "Event is full.";
+            return RedirectToAction("Pending", new { tab = "manage" });
+        }
+
+        request.Status = "Approved";
+        if (request.User != null)
+        {
+            eventItem.JoinedUsers.Add(request.User);
+            eventItem.CurrentMembers++;
+
+            // Create notification for the approved user
+            var notification = new Notification
+            {
+                Id = _nextNotificationId++,
+                User = request.User,
+                Message = $"Your join request for '{eventItem.Title}' has been approved!",
+                Type = "request_approved",
+                EventId = request.EventId
+            };
+            _notifications.Add(notification);
+        }
+        TempData["Message"] = "Request approved.";
+        return RedirectToAction("Pending", new { tab = "manage" });
+    }
+
+    [HttpPost]
+    public IActionResult RejectJoin(int requestId)
+    {
+        var currentUser = HttpContext.Session.GetString("User");
+        if (string.IsNullOrEmpty(currentUser))
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        var request = _joinRequests.FirstOrDefault(r => r.Id == requestId);
+        if (request == null)
+        {
+            return NotFound();
+        }
+
+        var eventItem = _events.FirstOrDefault(e => e.Id == request.EventId);
+        if (eventItem == null || eventItem.Creator != currentUser)
+        {
+            return Forbid();
+        }
+
+        request.Status = "Rejected";
+
+        // Create notification for the rejected user
+        var notification = new Notification
+        {
+            Id = _nextNotificationId++,
+            User = request.User,
+            Message = $"Your join request for '{eventItem.Title}' has been rejected.",
+            Type = "request_rejected",
+            EventId = request.EventId
+        };
+        _notifications.Add(notification);
+
+        TempData["Message"] = "Request rejected.";
+        return RedirectToAction("Pending", new { tab = "manage" });
+    }
+
+
+    public IActionResult MyPendingRequests()
+    {
+        var currentUser = HttpContext.Session.GetString("User");
+        if (string.IsNullOrEmpty(currentUser))
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        var pendingRequests = _joinRequests.Where(r => r.User == currentUser && r.Status == "Pending")
+                                           .Select(r => new PendingRequestViewModel
+                                           {
+                                               Request = r,
+                                               Event = _events.FirstOrDefault(e => e.Id == r.EventId) ?? new Event()
+                                           })
+                                           .ToList();
+        return View(pendingRequests);
+    }
+
+    public IActionResult Pending(string tab = "my")
+    {
+        var currentUser = HttpContext.Session.GetString("User");
+        if (string.IsNullOrEmpty(currentUser))
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        var viewModel = new PendingPageViewModel { ActiveTab = tab };
+
+        // My Pending Requests
+        viewModel.MyPendingRequests = _joinRequests
+            .Where(r => r.User == currentUser && r.Status == "Pending")
+            .Select(r => new PendingRequestViewModel
+            {
+                Request = r,
+                Event = _events.FirstOrDefault(e => e.Id == r.EventId) ?? new Event()
+            })
+            .ToList();
+
+        // Event Pending Requests (สำหรับกิจกรรมที่คุณสร้าง)
+        var myEvents = _events.Where(e => e.Creator == currentUser);
+        foreach (var eventItem in myEvents)
+        {
+            var pendingRequests = _joinRequests
+                .Where(r => r.EventId == eventItem.Id && r.Status == "Pending")
+                .ToList();
+
+            if (pendingRequests.Any())
+            {
+                viewModel.EventPendingRequests.Add(new EventPendingRequestsViewModel
+                {
+                    Event = eventItem,
+                    PendingRequests = pendingRequests
+                });
+            }
+        }
+
+        return View(viewModel);
+    }
+
     // Method to get events for Index
     public static List<Event> GetEvents()
     {
         return _events.OrderByDescending(e => e.Date).ToList();
+    }
+
+    // Method to get notifications
+    public static List<Notification> GetNotifications()
+    {
+        return _notifications;
     }
 
     public IActionResult Privacy()

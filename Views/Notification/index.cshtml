@@ -1,1 +1,25 @@
-<h1>Notificaiton Page</h1>
+@{
+    ViewData["Title"] = "Notifications";
+}
+@model List<Notification>
+
+<div class="notification-page">
+    <h1>Notifications</h1>
+
+    @if (Model.Any())
+    {
+        <div class="notification-list">
+            @foreach (var notification in Model)
+            {
+                <div class="notification-item @(notification.IsRead ? "read" : "unread")" data-id="@notification.Id" data-event-id="@notification.EventId">
+                    <p>@notification.Message</p>
+                    <small>@notification.CreatedAt.ToString("MMM dd, yyyy HH:mm")</small>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="no-notifications">No notifications yet.</p>
+    }
+</div>

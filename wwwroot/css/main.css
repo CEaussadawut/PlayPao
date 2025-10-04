@@ -333,3 +333,76 @@ button {
   border: none;
   cursor: pointer;
 }
+
+/* Tab styles for pending requests */
+.tabs {
+  margin-bottom: 20px;
+}
+
+.tabs a {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-right: 10px;
+  text-decoration: none;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  color: #333;
+}
+
+.tabs a.active {
+  background-color: #FF742B;
+  color: white;
+}
+
+/* Joined Users Grid */
+.joined-users {
+  margin-top: 2rem;
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.joined-users h4 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.users-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.user-card {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.user-card:hover {
+  transform: translateY(-2px);
+}
+
+.user-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+}
+
+.user-info h5 {
+  margin: 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.user-info p {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.875rem;
+  color: #666;
+}

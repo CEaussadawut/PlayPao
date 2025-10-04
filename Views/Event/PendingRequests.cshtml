@@ -1,0 +1,47 @@
+@model List<EventJoinRequest>
+@{
+    ViewData["Title"] = "Pending Join Requests";
+    var eventItem = ViewBag.Event as Event;
+}
+
+@if (eventItem != null)
+{
+    <h2>Pending Requests for @eventItem.Title</h2>
+}
+else
+{
+    <h2>Pending Join Requests</h2>
+}
+
+@if (Model.Any())
+{
+    <ul>
+        @foreach (var request in Model)
+        {
+            <li>
+                @request.User requested on @request.RequestedAt.ToString("g")
+                <form method="post" action="@Url.Action("ApproveJoin", "Event")" style="display: inline;">
+                    <input type="hidden" name="requestId" value="@request.Id" />
+                    <button type="submit">Approve</button>
+                </form>
+                <form method="post" action="@Url.Action("RejectJoin", "Event")" style="display: inline;">
+                    <input type="hidden" name="requestId" value="@request.Id" />
+                    <button type="submit">Reject</button>
+                </form>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No pending requests.</p>
+}
+
+@if (eventItem != null)
+{
+    <a href="@Url.Action("Detail", "Event", new { id = eventItem.Id })">Back to Event</a>
+}
+else
+{
+    <a href="@Url.Action("MyEvents", "Event")">Back to My Events</a>
+}

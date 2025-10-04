@@ -1,0 +1,72 @@
+@using PlayPao.Models
+@model PendingPageViewModel
+@{
+    ViewData["Title"] = "Pending Requests";
+}
+
+<h2>Pending Requests</h2>
+
+<!-- Tab Navigation -->
+<div class="tabs">
+    <a href="@Url.Action("Pending", "Event", new { tab = "my" })" class="@(Model.ActiveTab == "my" ? "active" : "")">My
+        Pending</a>
+    <a href="@Url.Action("Pending", "Event", new { tab = "manage" })"
+        class="@(Model.ActiveTab == "manage" ? "active" : "")">Pending Requests</a>
+</div>
+
+@if (Model.ActiveTab == "my")
+{
+    <!-- My Pending Tab -->
+    <h3>My Pending Join Requests</h3>
+    @if (Model.MyPendingRequests.Any())
+    {
+        <ul>
+            @foreach (var item in Model.MyPendingRequests)
+            {
+                <li>
+                    You requested to join <strong>@item.Event.Title</strong> on @item.Request.RequestedAt.ToString("g")
+                    <a href="@Url.Action("Detail", "Event", new { id = item.Event.Id })">View Event</a>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No pending requests.</p>
+    }
+}
+else
+{
+    <!-- Manage Pending Tab -->
+    <h3>Pending Requests to Manage</h3>
+    @if (Model.EventPendingRequests.Any())
+    {
+        @foreach (var eventRequests in Model.EventPendingRequests)
+        {
+            <h4>@eventRequests.Event.Title</h4>
+            <ul>
+                @foreach (var request in eventRequests.PendingRequests)
+                {
+                    <li>
+                        <strong>@request.User</strong> requested to join <strong>@eventRequests.Event.Title</strong> on
+                        @request.RequestedAt.ToString("g")
+                        <form method="post" action="@Url.Action("ApproveJoin", "Event")" style="display: inline;">
+                            <input type="hidden" name="requestId" value="@request.Id" />
+                            <button type="submit">Approve</button>
+                        </form>
+                        <form method="post" action="@Url.Action("RejectJoin", "Event")" style="display: inline;">
+                            <input type="hidden" name="requestId" value="@request.Id" />
+                            <button type="submit">Reject</button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        }
+    }
+    else
+    {
+        <p>No pending requests to manage.</p>
+    }
+}
+
+<a href="/">Back to Home</a>

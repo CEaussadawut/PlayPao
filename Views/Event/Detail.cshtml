@@ -56,6 +56,34 @@
                     <a asp-controller="Auth" asp-action="Login" style="color:#FF742B;text-decoration:none;">
                         Login to join
                     </a>
+                    var existingRequest = ((List<EventJoinRequest>)ViewBag.JoinRequests)?.FirstOrDefault(r => r.EventId ==
+                    Model.Id && r.User == currentUser);
+                    var isJoined = Model.JoinedUsers.Contains(currentUser);
+
+                    if (isJoined)
+                    {
+                        <p style="color: green;">You are a member of this event.</p>
+                    }
+                    else if (existingRequest != null && existingRequest.Status == "Pending")
+                    {
+                        <p style="color: orange;">Join request pending approval.</p>
+                    }
+                    else if (existingRequest != null && existingRequest.Status == "Rejected")
+                    {
+                        <p style="color: red;">Join request was rejected.</p>
+                    }
+                    else if (Model.CurrentMembers >= Model.Member)
+                    {
+                        <button type="submit" class="btn-join" disabled
+                            style="background-color: gray; cursor: not-allowed;">Full</button>
+                    }
+                    else
+                    {
+                        <form method="post" action="@Url.Action("RequestJoin", "Event")" style="display: inline;">
+                            <input type="hidden" name="eventId" value="@Model.Id" />
+                            <button type="submit" class="btn-join">Request to Join</button>
+                        </form>
+                    }
                 }
                 else if (!isCreator)
                 {
@@ -74,6 +102,12 @@
                                     style="background:#FF742B;color:#fff;border-radius:2rem;padding:.35rem .9rem;border:none;cursor:pointer;">
                                 Join
                             </button>
+                    <p style="font-style: italic; color: #666;">You created this event</p>
+                    <div class="flex gap-2 mt-2">
+                        <form method="post" action="@Url.Action("Edit", "Event", new { id = Model.Id })"
+                            style="display: inline;" )>
+                            <button type="submit" class="px-3 py-1 text-sm"
+                                style="background-color: #007bff; color: white; border-radius: 2rem; border: none; cursor: pointer;">Edit</button>
                         </form>
                     }
                 }
@@ -89,6 +123,7 @@
                         </a>
 
                         <form method="post" action="@Url.Action("Delete", "Event", new { id = Model.Id })"
+
                               style="display:inline;"
                               onsubmit="return confirm('Are you sure you want to delete this event?')">
                             @Html.AntiForgeryToken()
@@ -96,6 +131,11 @@
                                     style="background-color:#dc3545;color:white;border-radius:2rem;border:none;cursor:pointer;padding:.35rem .9rem;">
                                 Delete
                             </button>
+
+                            style="display: inline;"
+                            onsubmit="return confirm('Are you sure you want to delete this event?')">
+                            <button type="submit" class="px-3 py-1 text-sm"
+                                style="background-color: #dc3545; color: white; border-radius: 2rem; border: none; cursor: pointer;">Delete</button>
                         </form>
                     </div>
                 }
@@ -111,5 +151,25 @@
                 <button type="submit">➤</button>
             </form>
         </div>
+
+        <!-- Joined Users -->
+        @if (ViewBag.JoinedUserProfiles != null && ((List<UserProfile>)ViewBag.JoinedUserProfiles).Any())
+        {
+            <div class="joined-users">
+                <h4>Joined Users</h4>
+                <div class="users-grid">
+                    @foreach (var profile in (List<UserProfile>)ViewBag.JoinedUserProfiles)
+                    {
+                        <div class="user-card">
+                            <img src="@profile.AvatarUrl" alt="Avatar" class="user-avatar">
+                            <div class="user-info">
+                                <h5>@profile.DisplayName</h5>
+                                <p>@(profile.UserName == Model.Creator ? "Creator" : "Member")</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
     </div>
 </div>
