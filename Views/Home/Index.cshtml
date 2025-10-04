@@ -5,6 +5,22 @@
 @using System.Globalization
 @model IEnumerable<Event>
 
+<style>
+.badge-full{
+  background:#f3f4f6; color:#374151;
+  border-radius:12px; padding:2px 10px;
+  font-size:12px; font-weight:700;
+}
+.btn-join{
+  background:#FF742B; color:#fff;
+  border:none; border-radius:999px;
+  padding:.4rem .9rem; cursor:pointer;
+}
+.btn-join.disabled{
+  background:#e5e7eb; color:#6b7280; cursor:not-allowed;
+}
+</style>
+
 <div class="flex flex-col gap-1 text-center">
     <div class="flex items-center gap-1">
         <input class="input-theme-full" type="text" placeholder="Search">
@@ -36,39 +52,68 @@
 
     @if (Model != null && Model.Any())
     {
-        @foreach (var eventItem in Model)
+        foreach (var eventItem in Model)
         {
-            <a href="@Url.Action("Detail", "Event", new { id = eventItem.Id })" style="text-decoration: none; color: inherit;">
-                <div style="display: flex; box-shadow: 0 0 5px rgb(0 0 0 / 0.2); padding: 1rem; border-radius: 0.5rem;">
-                    <img src="@(string.IsNullOrEmpty(eventItem.ImagePath) ? "https://i.ytimg.com/vi/N_Fb4x-OAzE/oardefault.jpg" : eventItem.ImagePath)"
-                        alt="" style="height: 110px; width: 200px; border-radius: 8px;">
-                    <div
-                        style="padding-top: 8px; padding-bottom: 8px; padding-right: 14px; padding-left: 14px; gap: 8px; width: 100%; margin-right: 8px">
-                        <h5 style="color: #FF742B">@eventItem.Date.ToString("dddd, MMMM d, yyyy")
-                            @eventItem.Time.Hours.ToString("D2"):@eventItem.Time.Minutes.ToString("D2") -
-                            @eventItem.EndTime.Hours.ToString("D2"):@eventItem.EndTime.Minutes.ToString("D2")</h5>
-                        <h3>@eventItem.Title</h3>
-                        <p>@eventItem.Description</p>
-                        <p style="font-size: 0.8em; color: #666;">Created by: @eventItem.Creator</p>
-                    </div>
-                    <div class="flex flex-col justify-between items-end">
+            var isFull = eventItem.CurrentMembers >= eventItem.Member;
+
+            <div onclick="location.href='@Url.Action("Detail", "Event", new { id = eventItem.Id })'"
+                 style="display:flex; box-shadow:0 0 5px rgb(0 0 0 / 0.2); padding:1rem; border-radius:0.5rem; cursor:pointer;">
+                <img src="@(string.IsNullOrEmpty(eventItem.ImagePath) ? "https://i.ytimg.com/vi/N_Fb4x-OAzE/oardefault.jpg" : eventItem.ImagePath)"
+                     alt="" style="height:110px; width:200px; border-radius:8px;">
+                <div style="padding-top:8px; padding-bottom:8px; padding-right:14px; padding-left:14px; gap:8px; width:100%; margin-right:8px">
+                    <h5 style="color:#FF742B">
+                        @eventItem.Date.ToString("dddd, MMMM d, yyyy")
+                        @eventItem.Time.Hours.ToString("D2"):@eventItem.Time.Minutes.ToString("D2")
+                        -
+                        @eventItem.EndTime.Hours.ToString("D2"):@eventItem.EndTime.Minutes.ToString("D2")
+                    </h5>
+                    <h3>@eventItem.Title</h3>
+                    <p>@eventItem.Description</p>
+                    <p style="font-size:.8em; color:#666;">Created by: @eventItem.Creator</p>
+                </div>
+
+                <div class="flex flex-col justify-between items-end" style="gap:.5rem;">
+                    @if (isFull)
+                    {
+                        <span class="badge-full">Full</span>
+                    }
+                    else
+                    {
                         <i data-lucide="bookmark"></i>
-                        <p style="width: 126px; text-align: right;">@eventItem.CurrentMembers / @eventItem.Member</p>
-                        <div class="flex gap-2">
-                         @if (!string.IsNullOrEmpty(currentUser) && currentUser != eventItem.Creator)
-                         {
-                            <button class="px-2 py-1 text-sm"
-                                style="background-color: #FF742B; color: white; border-radius: 2rem;">join</button>
-                         }
-                             else if (currentUser == eventItem.Creator)
-                         {
-                            <span style="font-style: italic; color: #666; width: 126px; text-align: right;">Created by you</span>
+                    }
+
+                    <p style="width:126px; text-align:right; margin:0;">
+                        @eventItem.CurrentMembers / @eventItem.Member
+                    </p>
+
+                    <div class="flex gap-2">
+                        @if (!string.IsNullOrEmpty(currentUser) && currentUser != eventItem.Creator)
+                        {
+                            if (isFull)
+                            {
+                                <button class="btn-join disabled" disabled onclick="event.stopPropagation();">Join</button>
+                            }
+                            else
+                            {
+                                <form method="post"
+                                      asp-controller="Event"
+                                      asp-action="Join"
+                                      asp-route-id="@eventItem.Id"
+                                      onclick="event.stopPropagation();">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn-join">Join</button>
+                                </form>
+                            }
                         }
-                        </div>
-                       
+                        else if (currentUser == eventItem.Creator)
+                        {
+                            <span style="font-style:italic; color:#666; width:126px; text-align:right;">
+                                Created by you
+                            </span>
+                        }
                     </div>
                 </div>
-            </a>
+            </div>
         }
     }
     else

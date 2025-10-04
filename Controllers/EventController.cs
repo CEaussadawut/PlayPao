@@ -18,6 +18,9 @@ public class EventController : Controller
     private static List<Notification> _notifications = new List<Notification>();
     private static int _nextNotificationId = 1;
 
+    // Keep Ticket Per User
+    public static readonly Dictionary<string, List<Ticket>> TicketsByUser = new();
+
     private readonly ILogger<EventController> _logger;
 
     public EventController(ILogger<EventController> logger)
@@ -127,7 +130,6 @@ public class EventController : Controller
             EndTime = endTime,
             Location = location,
             Creator = currentUser
-
         };
 
         // Handle image upload
@@ -314,8 +316,71 @@ public class EventController : Controller
         }
 
         _events.Remove(eventItem);
+
+        foreach (var kv in TicketsByUser)
+        {
+            kv.Value.RemoveAll(t => t.EventId == id);
+        }
+
         return RedirectToAction("MyEvents");
     }
+
+    // helper
+    private static Event? FindEventById(int id) => _events.FirstOrDefault(e => e.Id == id);
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Join(int id)
+    {
+        var user = HttpContext.Session.GetString("User");
+        if (string.IsNullOrWhiteSpace(user))
+            return RedirectToAction("Login", "Auth");
+
+        var ev = FindEventById(id);
+        if (ev == null) return NotFound();
+
+        if (ev.CurrentMembers >= ev.Member)
+        {
+            TempData["Info"] = "Event is full.";
+            return RedirectToAction("Detail", new { id });
+        }
+
+        if (!TicketsByUser.TryGetValue(user, out var list))
+        {
+            list = new List<Ticket>();
+            TicketsByUser[user] = list;
+        }
+
+        if (list.Any(t => t.EventId == id))
+        {
+            TempData["toast"] = "You already joined this event.";
+            return RedirectToAction("Ticket", "Home");
+        }
+
+        var fallbackImg = "https://i.ytimg.com/vi/N_Fb4x-OAzE/oardefault.jpg";
+
+        // Build Ticket 
+        list.Add(new Ticket
+        {
+            Id = list.Count == 0 ? 1 : list.Max(t => t.Id) + 1,
+            EventId = ev.Id,
+            EventTitle = ev.Title ?? string.Empty,
+            Description = ev.Description ?? string.Empty,
+            Creator = ev.Creator ?? string.Empty,
+            ImagePath = string.IsNullOrWhiteSpace(ev.ImagePath) ? fallbackImg : ev.ImagePath!,
+            Location = ev.Location ?? string.Empty,
+            Date = ev.Date,
+            Time = ev.Time,
+            EndTime = ev.EndTime
+        });
+
+        ev.CurrentMembers = Math.Min(ev.CurrentMembers + 1, ev.Member);
+
+        TempData["toast"] = "Joined successfully!";
+        return RedirectToAction("Ticket", "Home");
+    }
+
+    public static Event? FindEvent(int id) => _events.FirstOrDefault(e => e.Id == id);
 
     [HttpPost]
     public IActionResult ApproveJoin(int requestId)
@@ -479,11 +544,11 @@ public class EventController : Controller
     {
         return View();
     }
+
     public IActionResult DetailMockup()
     {
         return View("Detail");
     }
-
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
