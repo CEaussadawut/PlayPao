@@ -2,11 +2,14 @@ using PlayPao.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace PlayPao.Controllers;
 
 public class HomeController : Controller
 {
+    public static readonly Dictionary<string, List<int>> BookmarksByUser = new();
+
     private readonly ILogger<HomeController> _logger;
 
     public HomeController(ILogger<HomeController> logger)
@@ -17,6 +20,7 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         var events = EventController.GetEvents();
+        ViewBag.JoinRequests = EventController.GetJoinRequests();
         return View(events);
     }
 
@@ -27,7 +31,38 @@ public class HomeController : Controller
 
     public IActionResult Bookmark()
     {
-        return View();
+        var user = HttpContext.Session.GetString("User");
+        if (string.IsNullOrWhiteSpace(user)) return RedirectToAction("Login", "Auth");
+
+        BookmarksByUser.TryGetValue(user, out var eventIds);
+        var events = eventIds?.Select(id => EventController.FindEvent(id)).Where(e => e != null).ToList() ?? new List<Event>();
+        ViewBag.JoinRequests = EventController.GetJoinRequests();
+        return View(events);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult ToggleBookmark(int eventId)
+    {
+        var user = HttpContext.Session.GetString("User");
+        if (string.IsNullOrWhiteSpace(user)) return RedirectToAction("Login", "Auth");
+
+        if (!BookmarksByUser.TryGetValue(user, out var list))
+        {
+            list = new List<int>();
+            BookmarksByUser[user] = list;
+        }
+
+        if (list.Contains(eventId))
+        {
+            list.Remove(eventId);
+        }
+        else
+        {
+            list.Add(eventId);
+        }
+
+        return RedirectToAction("Index");
     }
 
     public IActionResult Ticket()

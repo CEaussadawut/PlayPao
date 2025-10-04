@@ -1,8 +1,10 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
     var currentUser = Context.Session.GetString("User");
+    var bookmarks = PlayPao.Controllers.HomeController.BookmarksByUser.TryGetValue(currentUser ?? "", out var b) ? b : new List<int>();
 }
 @using System.Globalization
+@using System.Collections.Generic
 @model IEnumerable<Event>
 
 <style>
@@ -79,7 +81,13 @@
                     }
                     else
                     {
-                        <i data-lucide="bookmark"></i>
+                        var isBookmarked = bookmarks.Contains(eventItem.Id);
+                        <form method="post" asp-controller="Home" asp-action="ToggleBookmark" asp-route-eventId="@eventItem.Id" onclick="event.stopPropagation();" style="background:none; border:none; padding:0; margin:0;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" style="background:none; border:none; cursor:pointer; padding:0;">
+                                <i data-lucide="bookmark" style="color: @(isBookmarked ? "#FF742B" : "#6b7280")"></i>
+                            </button>
+                        </form>
                     }
 
                     <p style="width:126px; text-align:right; margin:0;">
@@ -89,19 +97,40 @@
                     <div class="flex gap-2">
                         @if (!string.IsNullOrEmpty(currentUser) && currentUser != eventItem.Creator)
                         {
-                            if (isFull)
+                            var existingRequest = ((List<EventJoinRequest>)ViewBag.JoinRequests)?.FirstOrDefault(r => r.EventId == eventItem.Id && r.User == currentUser);
+                            var isJoined = eventItem.JoinedUsers.Contains(currentUser);
+
+                            if (isJoined)
                             {
-                                <button class="btn-join disabled" disabled onclick="event.stopPropagation();">Join</button>
+                                <span style="font-style:italic; color:#666; width:126px; text-align:right;">
+                                    Joined
+                                </span>
+                            }
+                            else if (existingRequest != null && existingRequest.Status == "Pending")
+                            {
+                                <span style="font-style:italic; color:#666; width:126px; text-align:right;">
+                                    Request Pending
+                                </span>
+                            }
+                            else if (existingRequest != null && existingRequest.Status == "Rejected")
+                            {
+                                <span style="font-style:italic; color:#666; width:126px; text-align:right;">
+                                    Request Rejected
+                                </span>
+                            }
+                            else if (isFull)
+                            {
+                                <button class="btn-join disabled" disabled onclick="event.stopPropagation();">Full</button>
                             }
                             else
                             {
                                 <form method="post"
                                       asp-controller="Event"
-                                      asp-action="Join"
-                                      asp-route-id="@eventItem.Id"
+                                      asp-action="RequestJoin"
+                                      asp-route-eventId="@eventItem.Id"
                                       onclick="event.stopPropagation();">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn-join">Join</button>
+                                    <button type="submit" class="btn-join">Request to Join</button>
                                 </form>
                             }
                         }

@@ -415,6 +415,30 @@ public class EventController : Controller
             eventItem.JoinedUsers.Add(request.User);
             eventItem.CurrentMembers++;
 
+            // Create ticket for the approved user
+            var fallbackImg = "https://i.ytimg.com/vi/N_Fb4x-OAzE/oardefault.jpg";
+            if (!TicketsByUser.TryGetValue(request.User, out var list))
+            {
+                list = new List<Ticket>();
+                TicketsByUser[request.User] = list;
+            }
+            if (!list.Any(t => t.EventId == request.EventId))
+            {
+                list.Add(new Ticket
+                {
+                    Id = list.Count == 0 ? 1 : list.Max(t => t.Id) + 1,
+                    EventId = eventItem.Id,
+                    EventTitle = eventItem.Title ?? string.Empty,
+                    Description = eventItem.Description ?? string.Empty,
+                    Creator = eventItem.Creator ?? string.Empty,
+                    ImagePath = string.IsNullOrWhiteSpace(eventItem.ImagePath) ? fallbackImg : eventItem.ImagePath,
+                    Location = eventItem.Location ?? string.Empty,
+                    Date = eventItem.Date,
+                    Time = eventItem.Time,
+                    EndTime = eventItem.EndTime
+                });
+            }
+
             // Create notification for the approved user
             var notification = new Notification
             {
@@ -532,6 +556,12 @@ public class EventController : Controller
     public static List<Event> GetEvents()
     {
         return _events.OrderByDescending(e => e.Date).ToList();
+    }
+
+    // Method to get join requests
+    public static List<EventJoinRequest> GetJoinRequests()
+    {
+        return _joinRequests;
     }
 
     // Method to get notifications

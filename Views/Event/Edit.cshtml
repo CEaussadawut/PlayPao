@@ -16,7 +16,8 @@
 
         <div class="flex flex-col gap-1">
             <h5>Event name</h5>
-            <input class="input-theme-full" type="text" id="title" name="title" value="@Model.Title" placeholder="Create Event" />
+            <input class="input-theme-full" type="text" id="title" name="title" value="@Model.Title"
+                placeholder="Create Event" />
             <textarea type="text" id="description" name="description" placeholder="Description" rows="4"
                 cols="50">@Model.Description</textarea>
         </div>
@@ -33,28 +34,34 @@
 
         <div class="flex flex-col gap-1">
             <h5>Maximum number of participants</h5>
-            <input class="input-theme-full" type="text" id="member" name="member" value="@Model.Member" placeholder="Enter Number" />
+            <input class="input-theme-full" type="number" id="member" name="member" value="@Model.Member"
+                placeholder="Enter Number" />
         </div>
 
         <div class="flex flex-col gap-1">
             <h5>The date of the event</h5>
-            <input class="input-theme-full" type="date" id="date" name="date" value="@Model.Date.ToString("yyyy-MM-dd")" placeholder="Date" />
+            <input class="input-theme-full" type="date" id="date" name="date" value="@Model.Date.ToString("yyyy-MM-dd")"
+                placeholder="Date" />
 
             <h5>Time Start</h5>
-            <input class="input-theme-full" type="time" id="time" name="time" value="@Model.Time.ToString(@"hh\:mm")" placeholder="Time Start" />
+            <input class="input-theme-full" type="time" id="time" name="time" value="@Model.Time.ToString(@"hh\:mm")"
+                placeholder="Time Start" />
 
             <h5>Time End</h5>
-            <input class="input-theme-full" type="time" id="endtime" name="endtime" value="@Model.EndTime.ToString(@"hh\:mm")" placeholder="Time End" />
+            <input class="input-theme-full" type="time" id="endtime" name="endtime"
+                value="@Model.EndTime.ToString(@"hh\:mm")" placeholder="Time End" />
         </div>
 
         <div class="flex flex-col gap-1">
             <h5>Location</h5>
-            <input class="input-theme-full" type="text" id="location" name="location" value="@Model.Location" placeholder="Location" />
+            <input class="input-theme-full" type="text" id="location" name="location" value="@Model.Location"
+                placeholder="Location" />
         </div>
 
         <div class="flex gap-2">
             <button class="text-lg" type="submit" style="cursor:pointer;">Update Event</button>
-            <a href="@Url.Action("MyEvents", "Event")" class="text-lg px-4 py-2 bg-gray-500 text-white rounded" style="text-decoration: none;">Cancel</a>
+            <a href="@Url.Action("MyEvents", "Event")" class="text-lg px-4 py-2 bg-gray-500 text-white rounded"
+                style="text-decoration: none;">Cancel</a>
         </div>
     </form>
 </div>
