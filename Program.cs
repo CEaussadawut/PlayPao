@@ -30,14 +30,20 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 app.MapControllerRoute(
-    name: "default",
+    name: "authentication",
     pattern: "{controller=Auth}/{action=Login}/{id?}")
     .WithStaticAssets();
 
 app.MapControllerRoute(
-    name: "default",
+    name: "event",
     pattern: "{controller=Event}/{action=CreateEvent}/{id?}")
     .WithStaticAssets();
+
+app.MapControllerRoute(
+    name: "notification",
+    pattern: "{controller=Nofication}/{action=Index}/{id?}")
+    .WithStaticAssets();
+
 
 app.UseMiddleware<AuthenticationMiddleware>();
 

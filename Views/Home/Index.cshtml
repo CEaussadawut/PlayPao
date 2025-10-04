@@ -8,31 +8,41 @@
 <div class="flex flex-col gap-1 text-center">
     <div class="flex items-center gap-1">
         <input class="input-theme-full" type="text" placeholder="Search">
-        <div class="relative">
-            <a href="#" id="notification-toggle" style="padding-top: 8px; color: black;">
-                <i data-lucide="bell"></i>
-            </a>
-            @* 
-            <div id="notification-dropdown"
-                class="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-md shadow-lg hidden z-10">
-                <div class="p-4">
-                    <h3 class="text-lg font-semibold mb-2">Notifications</h3>
-                    <div class="space-y-2">
-                        <div class="p-2 bg-gray-100 rounded">
-                            <p class="text-sm">New event: Tech Conference 2023</p>
-                            <p class="text-xs text-gray-500">2 hours ago</p>
+        <div class="top-bar" style="margin-top: 0.75rem;">
+            <div class="notification-area">
+                <a href="#" id="notification-toggle" class="notification-icon">
+                    <i data-lucide="bell"></i>
+                    <span class="badge">3</span>
+                </a>
+
+                <div id="notification-box" class="notification-box hidden">
+                    <div class="notification-header">
+                        <h3>Notifications</h3>
+                        <button id="notification-close">&times;</button>
+                    </div>
+
+                    <div class="notification-list">
+                        <div class="notification-item">
+                            <p>New event: Tech Conference 2025</p>
+                            <small>2 hours ago</small>
                         </div>
-                        <div class="p-2 bg-gray-100 rounded">
-                            <p class="text-sm">Reminder: Meeting at 3 PM</p>
-                            <p class="text-xs text-gray-500">1 day ago</p>
+                        <div class="notification-item">
+                            <p>Reminder: Meeting at 3 PM</p>
+                            <small>1 day ago</small>
                         </div>
-                        <div class="p-2 bg-gray-100 rounded">
-                            <p class="text-sm">Update: Profile picture changed</p>
-                            <p class="text-xs text-gray-500">3 days ago</p>
+                        <div class="notification-item">
+                            <p>Update: Profile picture changed</p>
+                            <small>3 days ago</small>
                         </div>
                     </div>
+
+                    <div class="notification-footer">
+                        <a asp-controller="Notification" asp-action="Index" style="text-decoration:none;">
+                            View all
+                        </a>
+                    </div>
                 </div>
-            </div> *@
+            </div>
         </div>
     </div>
 
