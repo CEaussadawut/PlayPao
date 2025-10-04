@@ -7,20 +7,33 @@
     <title>@ViewData["Title"] - PlayPao</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/base/_width.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/base/_height.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/base/_padding.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/base/_margin.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/base/_position.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/base/_typography.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PlayPao.styles.css" asp-append-version="true" />
+    <style>
+        header {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+        }
+    </style>
 </head>
 
 <body>
-    <main role="main" class="relative">
-        <a asp-controller="Home" asp-action="Index" style="color: black;">
-            <div class="flex absolute top-2 left-2 gap-0.5 button-white px-1 py-0.5 rounded-lg">
-                <i data-lucide="arrow-left"></i>
-                <span>Back</span>
-            </div>
+    <header>
+        <a asp-controller="Home" asp-action="Index" style="color: black; text-decoration: none;"
+            class="w-fit flex gap-0.5 button-white px-1 py-0.5 rounded-lg">
+            <i data-lucide="arrow-left"></i>
+            <span>Back</span>
         </a>
+    </header>
 
+
+    <main role="main">
         @RenderBody()
     </main>
 

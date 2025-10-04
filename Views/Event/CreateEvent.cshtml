@@ -1,30 +1,51 @@
 @{
-    Layout = "~/Views/Shared/Auth/_Layout.cshtml";
+    Layout = "~/Views/Shared/Page/_Layout.cshtml";
     ViewData["Title"] = "Create Event";
 }
 
+<div class="mx-auto flex flex-col items-center gap-1 text-left">
+    <h1 class="w-full">สร้าง Event</h1>
 
-<div class="flex flex-col gap-2 items-center">
-    <h1>Create Event</h1>
-    <form asp-action="CreateEvent" method="post" enctype="multipart/form-data" class="flex flex-col gap-2 items-right">
+    <form asp-action="CreateEvent" method="post" enctype="multipart/form-data" class="flex flex-col gap-2 w-full">
         @if (ViewBag.Error != null)
         {
             <div class="text-red-500">@ViewBag.Error</div>
         }
-        <input class="input-theme-large" type="text" id="title" name="title" placeholder="Title" />
-        <input class="input-theme-image" type="file" id="imageUpload" name="image" accept="image/*"
-            placeholder="image" />
-        <input class="input-theme-description" type="text" id="description" name="description"
-            placeholder="Description" />
-        <input class="input-theme-large" type="text" id="member" name="member" placeholder="Enter Number" />
-        <input class="input-theme-large" type="date" id="date" name="date" placeholder="Date" />
-        <h5>Time Start</h5>
-        <input class="input-theme-large" type="time" id="time" name="time" placeholder="Time Start" />
-        <h5>Time End</h5>
-        <input class="input-theme-large" type="time" id="endtime" name="endtime" placeholder="Time End" />
-        <input class="input-theme-large" type="text" id="location" name="location" placeholder="Location" />
-        <button class="button-theme-large text-lg" type="submit">Create Event!</button>
 
+        <div class="flex flex-col gap-1">
+            <h5>Event name</h5>
+            <input class="input-theme-full" type="text" id="title" name="title" placeholder="Create Event" />
+            <textarea type="text" id="description" name="description" placeholder="Description" rows="4"
+                cols="50"></textarea>
+        </div>
+
+        <div class="flex flex-col gap-1">
+            <h5>Upload Image</h5>
+            <input class="input-theme-full" type="file" id="imageUpload" name="image" accept="image/*"
+                placeholder="image" />
+        </div>
+
+        <div class="flex flex-col gap-1">
+            <h5>Maximum number of participants</h5>
+            <input class="input-theme-full" type="text" id="member" name="member" placeholder="Enter Number" />
+        </div>
+
+        <div class="flex flex-col gap-1">
+            <h5>The date of the event</h5>
+            <input class="input-theme-full" type="date" id="date" name="date" placeholder="Date" />
+
+            <h5>Time Start</h5>
+            <input class="input-theme-full" type="time" id="time" name="time" placeholder="Time Start" />
+
+            <h5>Time End</h5>
+            <input class="input-theme-full" type="time" id="endtime" name="endtime" placeholder="Time End" />
+        </div>
+
+        <div class="flex flex-col gap-1">
+            <h5>Location</h5>
+            <input class="input-theme-full" type="text" id="location" name="location" placeholder="Location" />
+        </div>
+
+        <button class="text-lg" type="submit" style="cursor:pointer;">Create Event!</button>
     </form>
-
 </div>

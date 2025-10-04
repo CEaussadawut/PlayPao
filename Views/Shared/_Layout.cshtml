@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+@{
+    var currentPath = Context.Request.Path.Value?.ToLower();
+}
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -9,6 +13,8 @@
     <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/base/_width.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/base/_height.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/base/_padding.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/base/_margin.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/base/_position.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/base/_typography.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PlayPao.styles.css" asp-append-version="true" />
@@ -24,13 +30,10 @@
         </a>
 
         <nav class="flex flex-col p-1 gap-1">
-            <a asp-controller="Home" asp-action="Index" class="flex gap-0.5">
+            <a asp-controller="Home" asp-action="Index" class="flex gap-0.5" style="text-decoration:none; color:black;">
                 <i data-lucide="home"></i>
                 <span>Home</span>
             </a>
-<<<<<<< Updated upstream
-            <a asp-controller="Home" asp-action="Bookmark" class="flex gap-0.5">
-=======
             <a asp-controller="Event" asp-action="MyEvents" class="flex gap-0.5"
                 style="text-decoration:none; color:black;">
                 <i data-lucide="bookmark-check"></i>
@@ -38,28 +41,39 @@
             </a>
             <a asp-controller="Home" asp-action="Bookmark" class="flex gap-0.5"
                 style="text-decoration:none; color:black;">
->>>>>>> Stashed changes
                 <i data-lucide="bookmark-check"></i>
                 <span>Bookmark</span>
             </a>
-            <a asp-controller="Home" asp-action="Ticket" class="flex gap-0.5">
+            <a asp-controller="Home" asp-action="Ticket" class="flex gap-0.5"
+                style="text-decoration:none; color:black;">
                 <i data-lucide="ticket-check"></i>
                 <span>Ticket</span>
             </a>
-            <a asp-controller="Home" asp-action="AboutUs" class="flex gap-0.5">
+            <a asp-controller="Home" asp-action="AboutUs" class="flex gap-0.5"
+                style="text-decoration:none; color:black;">
                 <i data-lucide="ellipsis"></i>
                 <span>About us</span>
             </a>
-            <br>
-            <button onclick="window.location.href='@Url.Action("CreateEvent", "Event")'">Create Event</button>
-        </nav>
-        <a asp-controller="Home" asp-action="Profile" class="inline-block" style="cursor:pointer;">
-            <div class="flex items-center gap-0.5 p-1">
-                <img src="https://avatars.githubusercontent.com/u/53619535?v=4" alt="profile" class="rounded-full h-2">
 
-                <p>@(Context.Session.GetString("User") ?? "Guest")</p>
+            <button onclick="window.location.href='@Url.Action("CreateEvent", "Event")'">
+                <p>Create Event</p>
+            </button>
+        </nav>
+
+        <a asp-controller="Home" asp-action="Profile" class="inline-block" style="text-decoration:none; color:black;">
+            @{
+                var userName = Context.Session.GetString("User");
+                var avatarSess = Context.Session.GetString("AvatarUrl");
+                var avatarSrc = Url.Content(string.IsNullOrWhiteSpace(avatarSess) ? "~/images/profile.png" : avatarSess);
+                var isLoggedIn = !string.IsNullOrWhiteSpace(userName);
+            }
+            <div class="flex items-center gap-0.5 p-1">
+                <img src="@avatarSrc" alt="profile" class="rounded-full h-2 w-2" style="object-fit:cover;">
+                <p>@(isLoggedIn? userName : "Not login")</p>
             </div>
         </a>
+
+
     </header>
 
     <main role="main" style="height: calc(100vh - 2rem); overflow-y: auto; overflow-x: hidden;">
@@ -72,12 +86,49 @@
         </div>
     </footer> *@
 
-    <aside>
-        <div class="flex items-center justify-between">
-            <p>Upcoming</p>
-            <a asp-controller="Home" asp-action="Index" class="text-theme">See All</a>
-        </div>
-    </aside>
+    @if (currentPath != "/home/aboutus")
+    {
+        <aside class="flex flex-col gap-1 justify-between" style="height: calc(100vh - 2rem); overflow-y: auto;">
+            <div class="flex flex-col gap-1">
+                <div class="flex items-center justify-between">
+                    <p>Upcoming</p>
+                    <a asp-controller="Home" asp-action="Index" class="text-theme">See All</a>
+                </div>
+
+                @for (var i = 0; i < 3; i++)
+                {
+                    <div>
+                        <p>Mon Sep 9th 2025 </p>
+                        <h3>Remote Design Sprint</h3>
+                        <p class="text-sm">
+                            This course is for UX designers, product managers, service designers and business consultants
+                            looking to
+                            learn how to develop product ideas - fast.
+                        </p>
+                    </div>
+                }
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <div class="flex items-center justify-between">
+                    <p>Message</p>
+                    <a asp-controller="Home" asp-action="Index" class="text-theme">See All</a>
+                </div>
+
+                <div class="flex flex-col gap-0.5">
+                    @for (var i = 0; i < 5; i++)
+                    {
+                        <div class="flex items-center gap-0.5">
+                            <img src="https://avatars.githubusercontent.com/u/53619535?v=4" alt="profile"
+                                class="rounded-full h-2">
+                            <p class="w-full">@(Context.Session.GetString("User") ?? "Guest")</p>
+                            <i data-lucide="message-circle"></i>
+                        </div>
+                    }
+                </div>
+            </div>
+        </aside>
+    }
 
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script>

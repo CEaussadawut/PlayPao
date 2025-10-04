@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Home Page";
     var currentUser = Context.Session.GetString("User");
 }
@@ -8,11 +8,6 @@
 <div class="flex flex-col gap-1 text-center">
     <div class="flex items-center gap-1">
         <input class="input-theme-full" type="text" placeholder="Search">
-<<<<<<< Updated upstream
-        <a href="#">
-            <i data-lucide="bell"></i>
-        </a>
-=======
         <div class="relative">
             <a href="#" id="notification-toggle" style="padding-top: 8px; color: black;">
                 <i data-lucide="bell"></i>
@@ -39,24 +34,12 @@
                 </div>
             </div> *@
         </div>
->>>>>>> Stashed changes
     </div>
 
     @if (Model != null && Model.Any())
     {
         @foreach (var eventItem in Model)
         {
-<<<<<<< Updated upstream
-            <div style="display: flex; box-shadow: 0 0 5px rgb(0 0 0 / 0.2); padding: 1rem; border-radius: 0.5rem;">
-                <img src="@(string.IsNullOrEmpty(eventItem.ImagePath) ? "https://i.ytimg.com/vi/N_Fb4x-OAzE/oardefault.jpg" : eventItem.ImagePath)"
-                    alt="" style="height: 110px; width: 200px; border-radius: 8px;">
-                <div
-                    style="padding-top: 8px; padding-bottom: 8px; padding-right: 14px; padding-left: 14px; gap: 8px; width: 100%; margin-right: 8px">
-                    <h5 style="color: #FF742B">@eventItem.Date.ToString("dddd, MMMM d, yyyy") @eventItem.Time.Hours.ToString("D2"):@eventItem.Time.Minutes.ToString("D2") -
-                        @eventItem.EndTime.Hours.ToString("D2"):@eventItem.EndTime.Minutes.ToString("D2")</h5>
-                    <h3>@eventItem.Title</h3>
-                    <p>@eventItem.Description</p>
-=======
             <a href="@Url.Action("Detail", "Event", new { id = eventItem.Id })" style="text-decoration: none; color: inherit;">
                 <div style="display: flex; box-shadow: 0 0 5px rgb(0 0 0 / 0.2); padding: 1rem; border-radius: 0.5rem;">
                     <img src="@(string.IsNullOrEmpty(eventItem.ImagePath) ? "https://i.ytimg.com/vi/N_Fb4x-OAzE/oardefault.jpg" : eventItem.ImagePath)"
@@ -86,7 +69,6 @@
                         </div>
                        
                     </div>
->>>>>>> Stashed changes
                 </div>
             </a>
         }

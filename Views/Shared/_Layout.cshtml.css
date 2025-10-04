@@ -11,7 +11,7 @@ main {
 }
 
 aside {
-  width: 250px;
+  width: 300px;
   padding: 16px;
 }
 
@@ -26,11 +26,15 @@ a {
 
 button {
   color: #FFF;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   width: fit-content;
 
-  padding: 16px;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
   border-radius: 100px;
   background-color: #FF742B;
 }
