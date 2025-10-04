@@ -1,6 +1,7 @@
 using PlayPao.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace PlayPao.Controllers;
 
@@ -31,7 +32,12 @@ public class HomeController : Controller
 
     public IActionResult Ticket()
     {
-        return View();
+        var user = HttpContext.Session.GetString("User");
+        if (string.IsNullOrWhiteSpace(user))
+            return RedirectToAction("Login", "Auth");
+
+        EventController.TicketsByUser.TryGetValue(user, out var tickets);
+        return View(tickets ?? Enumerable.Empty<Ticket>());
     }
 
     public IActionResult AboutUs()
