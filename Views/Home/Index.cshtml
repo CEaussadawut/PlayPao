@@ -1,4 +1,4 @@
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
     var currentUser = Context.Session.GetString("User");
 }
@@ -8,42 +8,30 @@
 <div class="flex flex-col gap-1 text-center">
     <div class="flex items-center gap-1">
         <input class="input-theme-full" type="text" placeholder="Search">
-        <div class="top-bar" style="margin-top: 0.75rem;">
-            <div class="notification-area">
-                <a href="#" id="notification-toggle" class="notification-icon">
-                    <i data-lucide="bell"></i>
-                    <span class="badge">3</span>
-                </a>
+        @if (!string.IsNullOrWhiteSpace(currentUser))
+        {
+            <div class="top-bar" style="margin-top: 0.75rem;">
+                <div class="notification-area">
+                    <a href="#" class="notification-icon" onclick="toggleNotificationBox()">
+                        <i data-lucide="bell"></i>
+                        <span class="badge" id="notification-badge" style="display: none;">0</span>
+                    </a>
 
-                <div id="notification-box" class="notification-box hidden">
-                    <div class="notification-header">
-                        <h3>Notifications</h3>
-                        <button id="notification-close">&times;</button>
-                    </div>
-
-                    <div class="notification-list">
-                        <div class="notification-item">
-                            <p>New event: Tech Conference 2025</p>
-                            <small>2 hours ago</small>
+                    <div class="notification-box hidden" id="notification-box">
+                        <div class="notification-header">
+                            <h3>Notifications</h3>
+                            <button onclick="toggleNotificationBox()">×</button>
                         </div>
-                        <div class="notification-item">
-                            <p>Reminder: Meeting at 3 PM</p>
-                            <small>1 day ago</small>
+                        <div class="notification-list" id="notification-list">
+                            <!-- Notifications will be loaded here -->
                         </div>
-                        <div class="notification-item">
-                            <p>Update: Profile picture changed</p>
-                            <small>3 days ago</small>
+                        <div class="notification-footer">
+                            <a asp-controller="Notification" asp-action="Index">View All</a>
                         </div>
-                    </div>
-
-                    <div class="notification-footer">
-                        <a asp-controller="Notification" asp-action="Index" style="text-decoration:none;">
-                            View all
-                        </a>
                     </div>
                 </div>
             </div>
-        </div>
+        }
     </div>
 
     @if (Model != null && Model.Any())

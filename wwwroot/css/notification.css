@@ -110,3 +110,53 @@
   color: #ff742b;
   font-size: 13px;
 }
+
+/* Notification page styles */
+.notification-page {
+  padding: 2rem;
+}
+
+.notification-page h1 {
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.notification-item {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #ff742b;
+}
+
+.notification-item.unread {
+  border-left-color: #007bff;
+  background: #f8f9ff;
+}
+
+.notification-item.read {
+  border-left-color: #28a745;
+}
+
+.notification-item p {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.notification-item small {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.no-notifications {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 2rem;
+}

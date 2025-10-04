@@ -40,6 +40,11 @@
                 <i data-lucide="bookmark-check"></i>
                 <span>My Events</span>
             </a>
+            <a asp-controller="Event" asp-action="Pending" class="flex gap-0.5"
+                style="text-decoration:none; color:black;">
+                <i data-lucide="clock"></i>
+                <span>Pending Requests</span>
+            </a>
             <a asp-controller="Home" asp-action="Bookmark" class="flex gap-0.5"
                 style="text-decoration:none; color:black;">
                 <i data-lucide="bookmark-check"></i>
@@ -61,11 +66,13 @@
             </button>
         </nav>
 
-        <a asp-controller="Home" asp-action="Profile" class="inline-block" style="text-decoration:none; color:black;">
+        <a asp-controller="Home" asp-action="Profile" class="inline-block"
+            style="text-decoration:none; color:black;">
             @{
                 var userName = Context.Session.GetString("User");
                 var avatarSess = Context.Session.GetString("AvatarUrl");
-                var avatarSrc = Url.Content(string.IsNullOrWhiteSpace(avatarSess) ? "~/images/profile.png" : avatarSess);
+                var avatarSrc = Url.Content(string.IsNullOrWhiteSpace(avatarSess) ? "~/images/profile.png" :
+                avatarSess);
                 var isLoggedIn = !string.IsNullOrWhiteSpace(userName);
             }
             <div class="flex items-center gap-0.5 p-1">
