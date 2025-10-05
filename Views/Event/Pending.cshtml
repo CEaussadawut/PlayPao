@@ -6,7 +6,6 @@
 
 <h2>Pending Requests</h2>
 
-<!-- Tab Navigation -->
 <div class="tabs">
     <a href="@Url.Action("Pending", "Event", new { tab = "my" })" class="@(Model.ActiveTab == "my" ? "active" : "")">My
         Pending</a>
@@ -16,7 +15,6 @@
 
 @if (Model.ActiveTab == "my")
 {
-    <!-- My Pending Tab -->
     <h3>My Pending Join Requests</h3>
     @if (Model.MyPendingRequests.Any())
     {
@@ -37,7 +35,6 @@
 }
 else
 {
-    <!-- Manage Pending Tab -->
     <h3>Pending Requests to Manage</h3>
     @if (Model.EventPendingRequests.Any())
     {

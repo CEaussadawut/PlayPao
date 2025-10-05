@@ -348,7 +348,6 @@ button {
   cursor: pointer;
 }
 
-/* Tab styles for pending requests */
 .tabs {
   margin-bottom: 20px;
 }
@@ -368,7 +367,6 @@ button {
   color: white;
 }
 
-/* Joined Users Grid */
 .joined-users {
   margin-top: 2rem;
   background: #fff;

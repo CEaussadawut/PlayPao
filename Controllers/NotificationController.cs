@@ -56,6 +56,21 @@ public class NotificationController : Controller
         return Json(count);
     }
 
+    [HttpGet]
+    public IActionResult GetTotalCount()
+    {
+        var currentUser = HttpContext.Session.GetString("User");
+        if (string.IsNullOrEmpty(currentUser))
+        {
+            return Json(0);
+        }
+
+        var count = EventController.GetNotifications()
+            .Count(n => n.User == currentUser);
+
+        return Json(count);
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

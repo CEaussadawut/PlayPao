@@ -20,7 +20,6 @@ public class HomeController : Controller
     public IActionResult Index(string search)
     {
         var events = EventController.GetEvents();
-        // Filter out past events
         events = events.Where(e => DateTime.Now < e.Date + e.Time).ToList();
         if (!string.IsNullOrWhiteSpace(search))
         {

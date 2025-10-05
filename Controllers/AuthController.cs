@@ -8,10 +8,8 @@ public class AuthController : Controller
 {
     private readonly ILogger<AuthController> _logger;
 
-    // Keep username/password in memory
     private static readonly Dictionary<string, string> Users = new();
 
-    //One profile per user use with HomeController
     public static readonly Dictionary<string, UserProfile> Profiles = new();
 
     private const string DefaultAvatar = "/images/profile.png";
@@ -21,7 +19,6 @@ public class AuthController : Controller
         _logger = logger;
     }
 
-    // ---------- Login ----------
     [HttpGet]
     public IActionResult Login()
     {
@@ -39,10 +36,8 @@ public class AuthController : Controller
 
         if (Users.TryGetValue(username, out var storedPassword) && storedPassword == password)
         {
-            // Create profile if dont have
             var profile = GetOrCreateProfile(username);
 
-            // Reset session other user
             HttpContext.Session.Clear();
             HttpContext.Session.SetString("User", username);
             HttpContext.Session.SetString("AvatarUrl", profile.AvatarUrl);
@@ -54,7 +49,6 @@ public class AuthController : Controller
         return View();
     }
 
-    // ---------- Register ----------
     [HttpGet]
     public IActionResult Register()
     {
@@ -84,7 +78,6 @@ public class AuthController : Controller
             return View();
         }
 
-        // Add new user + IntitialProfile
         Users[username] = password;
         var profile = GetOrCreateProfile(username);
 
@@ -95,7 +88,6 @@ public class AuthController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-    // ---------- Logout ----------
     public IActionResult Logout()
     {
         HttpContext.Session.Clear();
@@ -103,14 +95,12 @@ public class AuthController : Controller
         return RedirectToAction("Login");
     }
 
-    // ---------- Error ----------
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
-    // ---------- Helpers ----------
     private static UserProfile GetOrCreateProfile(string username)
     {
         if (!Profiles.TryGetValue(username, out var p))

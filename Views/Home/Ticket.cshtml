@@ -1,6 +1,6 @@
 @model IEnumerable<PlayPao.Models.Ticket>
 @using System.Globalization
-@using PlayPao.Controllers @* เรียก EventController.FindEvent *@
+@using PlayPao.Controllers
 
 @{
   ViewData["Title"] = "Tickets";
@@ -169,7 +169,6 @@
   {
     foreach (var t in Model)
     {
-      // ดึง Event สดจาก store
       var ev = EventController.FindEvent(t.EventId);
 
       var title = ev?.Title ?? t.EventTitle;
@@ -212,7 +211,10 @@
           </div>
 
           <div style="margin-top:12px">
-            <a asp-controller="Event" asp-action="Detail" asp-route-id="@t.EventId" class="btn btn--primary">View Event</a>
+            <form method="get" asp-controller="Event" asp-action="Detail" asp-route-id="@t.EventId"
+              style="display:inline; margin-right:12px;">
+              <button type="submit" class="btn btn--primary">View Event</button>
+            </form>
             <form method="post" asp-controller="Event" asp-action="LeaveEvent" asp-route-eventId="@t.EventId"
               style="display:inline;">
               @Html.AntiForgeryToken()

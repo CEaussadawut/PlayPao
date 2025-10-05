@@ -53,6 +53,5 @@ app.UseExceptionHandler("/Home/Error");
 app.UseHsts();
 
 var connectionString = DatabaseConfig.GetConnectionString(builder.Configuration, app.Environment);
-// await using var conn = new NpgsqlConnection(connectionString);
 
 app.Run();

@@ -15,7 +15,6 @@ namespace PlayPao.ViewComponents
                 return View(Enumerable.Empty<Event>());
             }
 
-            // Get events that the user has joined and haven't started yet
             var upcomingEvents = EventController.GetEvents()
                 .Where(e => e.JoinedUsers.Contains(currentUser))
                 .Where(e => DateTime.Now < e.Date + e.Time)

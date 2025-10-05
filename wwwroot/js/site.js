@@ -1,7 +1,4 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-function ok() {
+﻿function ok() {
     console.log("OK");
 }
 
@@ -11,15 +8,31 @@ function toggleNotificationBox() {
     box.classList.toggle("hidden");
     if (!box.classList.contains("hidden")) {
         loadNotifications();
-        // Reset notification count when opening
         resetNotificationCount();
     }
 }
 
 function loadNotifications() {
-    fetch('/Notification/GetUnreadCount')
-        .then(response => response.json())
-        .then(count => {
+    var xhrTotal = new XMLHttpRequest();
+    xhrTotal.open('GET', '/Notification/GetTotalCount', true);
+    xhrTotal.onreadystatechange = function () {
+        if (xhrTotal.readyState === 4 && xhrTotal.status === 200) {
+            var totalCount = JSON.parse(xhrTotal.responseText);
+            if (previousTotalCount > 0 && totalCount > previousTotalCount && !hasReloadedForNewNotifications) {
+                hasReloadedForNewNotifications = true;
+                location.reload();
+                return;
+            }
+            previousTotalCount = totalCount;
+        }
+    };
+    xhrTotal.send();
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/Notification/GetUnreadCount', true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var count = JSON.parse(xhr.responseText);
             const badge = document.getElementById("notification-badge");
             if (count > 0) {
                 badge.textContent = count;
@@ -27,13 +40,17 @@ function loadNotifications() {
             } else {
                 badge.style.display = "none";
             }
-        });
 
-    // Load recent notifications for dropdown
-    fetch('/Notification/Index')
-        .then(response => response.text())
-        .then(html => {
-            // Extract notification items from the full page
+            previousUnreadCount = count;
+        }
+    };
+    xhr.send();
+
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open('GET', '/Notification/Index', true);
+    xhr2.onreadystatechange = function () {
+        if (xhr2.readyState === 4 && xhr2.status === 200) {
+            var html = xhr2.responseText;
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             const notifications = doc.querySelectorAll('.notification-item');
@@ -46,63 +63,46 @@ function loadNotifications() {
                         const clonedItem = item.cloneNode(true);
                         const notificationText = clonedItem.querySelector('p').textContent;
 
-                        // Only make clickable if it's an approval notification
                         if (notificationText.includes('has been approved')) {
                             clonedItem.style.cursor = 'pointer';
                             clonedItem.addEventListener('click', function () {
-                                // Go to event detail page for approved requests
                                 window.location.href = '/Event/Detail/' + this.dataset.eventId;
 
-                                // Mark as read when clicked
                                 const notificationId = this.dataset.id;
                                 if (notificationId) {
-                                    fetch('/Notification/MarkAsRead', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/x-www-form-urlencoded',
-                                        },
-                                        body: 'id=' + notificationId
-                                    });
+                                    var xhrInner = new XMLHttpRequest();
+                                    xhrInner.open('POST', '/Notification/MarkAsRead', true);
+                                    xhrInner.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                                    xhrInner.send('id=' + notificationId);
                                 }
                             });
                         } else if (notificationText.includes('has been rejected')) {
-                            // Rejection notifications are not clickable
                             clonedItem.style.cursor = 'default';
                             clonedItem.style.opacity = '0.7';
                         } else if (notificationText.includes('requested to join')) {
-                            // Join request notifications go to pending page
                             clonedItem.style.cursor = 'pointer';
                             clonedItem.addEventListener('click', function () {
                                 window.location.href = '/Event/Pending';
 
-                                // Mark as read when clicked
                                 const notificationId = this.dataset.id;
                                 if (notificationId) {
-                                    fetch('/Notification/MarkAsRead', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/x-www-form-urlencoded',
-                                        },
-                                        body: 'id=' + notificationId
-                                    });
+                                    var xhrInner = new XMLHttpRequest();
+                                    xhrInner.open('POST', '/Notification/MarkAsRead', true);
+                                    xhrInner.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                                    xhrInner.send('id=' + notificationId);
                                 }
                             });
                         } else {
-                            // Other notifications go to notification page
                             clonedItem.style.cursor = 'pointer';
                             clonedItem.addEventListener('click', function () {
                                 window.location.href = '/Notification';
 
-                                // Mark as read when clicked
                                 const notificationId = this.dataset.id;
                                 if (notificationId) {
-                                    fetch('/Notification/MarkAsRead', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/x-www-form-urlencoded',
-                                        },
-                                        body: 'id=' + notificationId
-                                    });
+                                    var xhrInner = new XMLHttpRequest();
+                                    xhrInner.open('POST', '/Notification/MarkAsRead', true);
+                                    xhrInner.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                                    xhrInner.send('id=' + notificationId);
                                 }
                             });
                         }
@@ -113,37 +113,37 @@ function loadNotifications() {
             } else {
                 list.innerHTML = '<div class="notification-item"><p>No new notifications</p></div>';
             }
-        });
+        }
+    };
+    xhr2.send();
 }
 
 function resetNotificationCount() {
-    // Mark all unread notifications as read
-    fetch('/Notification/Index')
-        .then(response => response.text())
-        .then(html => {
+    var xhr3 = new XMLHttpRequest();
+    xhr3.open('GET', '/Notification/Index', true);
+    xhr3.onreadystatechange = function () {
+        if (xhr3.readyState === 4 && xhr3.status === 200) {
+            var html = xhr3.responseText;
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             const unreadItems = doc.querySelectorAll('.notification-item.unread');
 
-            // Mark all unread notifications as read
             unreadItems.forEach(item => {
                 const notificationId = item.dataset.id;
                 if (notificationId) {
-                    fetch('/Notification/MarkAsRead', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: 'id=' + notificationId
-                    });
+                    var xhrInner2 = new XMLHttpRequest();
+                    xhrInner2.open('POST', '/Notification/MarkAsRead', true);
+                    xhrInner2.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhrInner2.send('id=' + notificationId);
                 }
             });
 
-            // Update badge count after a short delay
             setTimeout(() => {
-                fetch('/Notification/GetUnreadCount')
-                    .then(response => response.json())
-                    .then(count => {
+                var xhr4 = new XMLHttpRequest();
+                xhr4.open('GET', '/Notification/GetUnreadCount', true);
+                xhr4.onreadystatechange = function () {
+                    if (xhr4.readyState === 4 && xhr4.status === 200) {
+                        var count = JSON.parse(xhr4.responseText);
                         const badge = document.getElementById("notification-badge");
                         if (count > 0) {
                             badge.textContent = count;
@@ -151,18 +151,31 @@ function resetNotificationCount() {
                         } else {
                             badge.style.display = "none";
                         }
-                    });
+                    }
+                };
+                xhr4.send();
             }, 100);
-        });
+        }
+    };
+    xhr3.send();
+}
+
+let previousUnreadCount = 0;
+let previousTotalCount = 0;
+let hasReloadedForNewNotifications = false;
+
+function startNotificationPolling() {
+    if (document.getElementById("notification-badge")) {
+        loadNotifications();
+        setInterval(function () {
+            loadNotifications();
+        }, 1000);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Load notification count on page load
-    if (document.getElementById("notification-badge")) {
-        loadNotifications();
-    }
+    startNotificationPolling();
 
-    // Close notification box when clicking outside
     document.addEventListener("click", function (e) {
         const box = document.getElementById("notification-box");
         const icon = document.querySelector(".notification-icon");

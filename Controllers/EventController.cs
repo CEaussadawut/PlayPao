@@ -10,7 +10,6 @@ namespace PlayPao.Controllers;
 
 public class EventController : Controller
 {
-    // Static list to store events (in production, use a database)
     private static List<Event> _events = new List<Event>();
     private static int _nextId = 1;
     private static List<EventJoinRequest> _joinRequests = new List<EventJoinRequest>();
@@ -20,7 +19,6 @@ public class EventController : Controller
     private static List<ChatMessage> _chatMessages = new List<ChatMessage>();
     private static int _nextChatMessageId = 1;
 
-    // Keep Ticket Per User
     public static readonly Dictionary<string, List<Ticket>> TicketsByUser = new();
 
     private readonly ILogger<EventController> _logger;
@@ -53,7 +51,6 @@ public class EventController : Controller
             return RedirectToAction("Detail", new { id = eventId });
         }
 
-        // Check if already requested or joined
         if (_joinRequests.Any(r => r.EventId == eventId && r.User == currentUser) ||
             eventItem.JoinedUsers.Contains(currentUser))
         {
@@ -509,7 +506,6 @@ public class EventController : Controller
             return Forbid();
         }
 
-        // Check if event has already started
         var eventStartTime = eventItem.Date + eventItem.Time;
         if (DateTime.Now >= eventStartTime)
         {
@@ -635,7 +631,6 @@ public class EventController : Controller
 
         var viewModel = new PendingPageViewModel { ActiveTab = tab };
 
-        // My Pending Requests
         viewModel.MyPendingRequests = _joinRequests
             .Where(r => r.User == currentUser && r.Status == "Pending")
             .Select(r => new PendingRequestViewModel
@@ -645,7 +640,6 @@ public class EventController : Controller
             })
             .ToList();
 
-        // Event Pending Requests (สำหรับกิจกรรมที่คุณสร้าง)
         var myEvents = _events.Where(e => e.Creator == currentUser);
         foreach (var eventItem in myEvents)
         {
@@ -682,6 +676,13 @@ public class EventController : Controller
     public static List<Notification> GetNotifications()
     {
         return _notifications;
+    }
+
+    [HttpGet]
+    public IActionResult GetChatMessageCount(int eventId)
+    {
+        var count = _chatMessages.Count(m => m.EventId == eventId);
+        return Json(count);
     }
 
     public IActionResult Privacy()

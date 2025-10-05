@@ -1,4 +1,3 @@
-/* layout */
 .top-bar {
   display: flex;
   align-items: center;
@@ -8,7 +7,6 @@
   position: relative;
 }
 
-/* notification area */
 .notification-area {
   position: relative;
 }
@@ -32,7 +30,6 @@
   padding: 2px 5px;
 }
 
-/* notification box */
 .notification-box {
   position: absolute;
   right: 0;
@@ -49,7 +46,6 @@
   display: none;
 }
 
-/* header */
 .notification-header {
   display: flex;
   justify-content: space-between;
@@ -71,7 +67,6 @@
   cursor: pointer;
 }
 
-/* notification list */
 .notification-list {
   max-height: 220px;
   overflow-y: auto;
@@ -97,7 +92,6 @@
   font-size: 12px;
 }
 
-/* footer */
 .notification-footer {
   text-align: center;
   padding: 8px 0;
@@ -111,7 +105,6 @@
   font-size: 13px;
 }
 
-/* Notification page styles */
 .notification-page {
   padding: 2rem;
 }
