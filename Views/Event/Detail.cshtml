@@ -5,6 +5,8 @@
     var currentUser = Context.Session.GetString("User");
     var isCreator = !string.IsNullOrWhiteSpace(currentUser) && currentUser == Model.Creator;
     var isFull = Model.CurrentMembers >= Model.Member;
+    var eventStartTime = Model.Date + Model.Time;
+    var isPastEvent = DateTime.Now >= eventStartTime;
 }
 
 <div class="event-detail">
@@ -27,8 +29,8 @@
             @if (isFull)
             {
                 <span style="position:absolute; right:12px; top:12px;
-                                     background:#f3f4f6; color:#374151; font-weight:700; font-size:12px;
-                                     border-radius:12px; padding:2px 10px;">
+                                         background:#f3f4f6; color:#374151; font-weight:700; font-size:12px;
+                                         border-radius:12px; padding:2px 10px;">
                     Full
                 </span>
             }
@@ -77,6 +79,10 @@
                     {
                         <p style="color: red;">Join request was rejected.</p>
                     }
+                    else if (isPastEvent)
+                    {
+                        <p style="color: #6b7280; font-style: italic;">This event has already started.</p>
+                    }
                     else if (isFull)
                     {
                         <button type="button" disabled
@@ -124,7 +130,8 @@
         <!-- Chat Box -->
         <div class="chat-box" style="margin-top:1rem;">
             <h4>Chat</h4>
-            <div class="chat-messages" style="max-height:200px; overflow-y:auto; border:1px solid #ddd; padding:0.5rem; margin-bottom:0.5rem;">
+            <div class="chat-messages"
+                style="max-height:200px; overflow-y:auto; border:1px solid #ddd; padding:0.5rem; margin-bottom:0.5rem;">
                 @if (ViewBag.ChatMessages != null)
                 {
                     @foreach (var msg in (List<ChatMessage>)ViewBag.ChatMessages)
@@ -138,10 +145,13 @@
             </div>
             @if (!string.IsNullOrWhiteSpace(currentUser) && (isCreator || Model.JoinedUsers.Contains(currentUser)))
             {
-                <form method="post" asp-controller="Event" asp-action="SendMessage" asp-route-eventId="@Model.Id" class="chat-input" style="display:flex; gap:0.5rem;">
+                <form method="post" asp-controller="Event" asp-action="SendMessage" asp-route-eventId="@Model.Id"
+                    class="chat-input" style="display:flex; gap:0.5rem;">
                     @Html.AntiForgeryToken()
-                    <input type="text" name="message" placeholder="Type a message..." style="flex:1; padding:0.5rem; border:1px solid #ddd; border-radius:4px;" required />
-                    <button type="submit" style="padding:0.5rem 1rem; background:#FF742B; color:#fff; border:none; border-radius:4px; cursor:pointer;">Send</button>
+                    <input type="text" name="message" placeholder="Type a message..."
+                        style="flex:1; padding:0.5rem; border:1px solid #ddd; border-radius:4px;" required />
+                    <button type="submit"
+                        style="padding:0.5rem 1rem; background:#FF742B; color:#fff; border:none; border-radius:4px; cursor:pointer;">Send</button>
                 </form>
             }
             else

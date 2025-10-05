@@ -103,18 +103,7 @@
                     <a asp-controller="Home" asp-action="Index" class="text-theme">See All</a>
                 </div>
 
-                @for (var i = 0; i < 3; i++)
-                {
-                    <div>
-                        <p>Mon Sep 9th 2025 </p>
-                        <h3>Remote Design Sprint</h3>
-                        <p class="text-sm">
-                            This course is for UX designers, product managers, service designers and business consultants
-                            looking to
-                            learn how to develop product ideas - fast.
-                        </p>
-                    </div>
-                }
+                @await Component.InvokeAsync("UpcomingEvents")
             </div>
 
             <div class="flex flex-col gap-1">

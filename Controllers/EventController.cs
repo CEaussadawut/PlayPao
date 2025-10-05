@@ -45,6 +45,14 @@ public class EventController : Controller
             return NotFound();
         }
 
+        // Check if event has already started
+        var eventStartTime = eventItem.Date + eventItem.Time;
+        if (DateTime.Now >= eventStartTime)
+        {
+            TempData["Message"] = "This event has already started or passed.";
+            return RedirectToAction("Detail", new { id = eventId });
+        }
+
         // Check if already requested or joined
         if (_joinRequests.Any(r => r.EventId == eventId && r.User == currentUser) ||
             eventItem.JoinedUsers.Contains(currentUser))
@@ -342,6 +350,14 @@ public class EventController : Controller
         var ev = FindEventById(id);
         if (ev == null) return NotFound();
 
+        // Check if event has already started
+        var eventStartTime = ev.Date + ev.Time;
+        if (DateTime.Now >= eventStartTime)
+        {
+            TempData["Info"] = "This event has already started.";
+            return RedirectToAction("Detail", new { id });
+        }
+
         if (ev.CurrentMembers >= ev.Member)
         {
             TempData["Info"] = "Event is full.";
@@ -380,6 +396,51 @@ public class EventController : Controller
         ev.CurrentMembers = Math.Min(ev.CurrentMembers + 1, ev.Member);
 
         TempData["toast"] = "Joined successfully!";
+        return RedirectToAction("Ticket", "Home");
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult LeaveEvent(int eventId)
+    {
+        var user = HttpContext.Session.GetString("User");
+        if (string.IsNullOrWhiteSpace(user))
+            return RedirectToAction("Login", "Auth");
+
+        var ev = FindEventById(eventId);
+        if (ev == null) return NotFound();
+
+        if (!ev.JoinedUsers.Contains(user))
+        {
+            TempData["toast"] = "You are not a member of this event.";
+            return RedirectToAction("Ticket", "Home");
+        }
+
+        // Remove user from joined users
+        ev.JoinedUsers.Remove(user);
+        ev.CurrentMembers = Math.Max(ev.CurrentMembers - 1, 0);
+
+        // Remove ticket
+        if (TicketsByUser.TryGetValue(user, out var list))
+        {
+            list.RemoveAll(t => t.EventId == eventId);
+        }
+
+        // Remove any existing join requests for this user and event
+        _joinRequests.RemoveAll(r => r.EventId == eventId && r.User == user);
+
+        // Create notification for event creator
+        var notification = new Notification
+        {
+            Id = _nextNotificationId++,
+            User = ev.Creator,
+            Message = $"{user} has cancelled their registration for your event '{ev.Title}'.",
+            Type = "member_cancelled",
+            EventId = eventId
+        };
+        _notifications.Add(notification);
+
+        TempData["toast"] = "Registration cancelled successfully!";
         return RedirectToAction("Ticket", "Home");
     }
 
@@ -446,6 +507,14 @@ public class EventController : Controller
         if (eventItem == null || eventItem.Creator != currentUser)
         {
             return Forbid();
+        }
+
+        // Check if event has already started
+        var eventStartTime = eventItem.Date + eventItem.Time;
+        if (DateTime.Now >= eventStartTime)
+        {
+            TempData["Error"] = "This event has already started.";
+            return RedirectToAction("Pending", new { tab = "manage" });
         }
 
         if (eventItem.CurrentMembers >= eventItem.Member)

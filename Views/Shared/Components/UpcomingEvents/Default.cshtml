@@ -1,0 +1,23 @@
+@model IEnumerable<Event>
+
+@if (Model != null && Model.Any())
+{
+    @foreach (var eventItem in Model)
+    {
+        <div onclick="location.href='@Url.Action("Detail", "Event", new { id = eventItem.Id })'"
+             style="cursor:pointer; margin-bottom:1rem;">
+            <p style="color:#FF742B; font-size:14px; margin:0;">
+                @eventItem.Date.ToString("ddd MMM d, yyyy")
+                @eventItem.Time.Hours.ToString("D2"):@eventItem.Time.Minutes.ToString("D2")
+            </p>
+            <h3 style="font-size:16px; margin:4px 0;">@eventItem.Title</h3>
+            <p style="font-size:14px; color:#6b7280; margin:0; line-height:1.4;">
+                @eventItem.Description
+            </p>
+        </div>
+    }
+}
+else
+{
+    <p style="color:#6b7280; font-size:14px;">No upcoming events</p>
+}
