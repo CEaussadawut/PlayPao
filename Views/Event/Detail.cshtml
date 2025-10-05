@@ -10,7 +10,13 @@
 }
 
 <div class="event-detail">
-    <a href="/" class="btn-back">← Back</a>
+    <a asp-controller="Home" asp-action="Index" style="color: black; text-decoration: none;"
+        class="w-fit flex gap-0.5 button-white px-1 py-0.5 rounded-lg">
+        <i data-lucide="arrow-left"></i>
+        <span>Back</span>
+    </a>
+
+    <br>
 
     <h2>@Model.Title</h2>
     <p class="event-creator">Created by: @Model.Creator</p>
@@ -29,8 +35,8 @@
             @if (isFull)
             {
                 <span style="position:absolute; right:12px; top:12px;
-                                         background:#f3f4f6; color:#374151; font-weight:700; font-size:12px;
-                                         border-radius:12px; padding:2px 10px;">
+                                                 background:#f3f4f6; color:#374151; font-weight:700; font-size:12px;
+                                                 border-radius:12px; padding:2px 10px;">
                     Full
                 </span>
             }

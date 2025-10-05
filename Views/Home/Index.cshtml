@@ -1,33 +1,46 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
     var currentUser = Context.Session.GetString("User");
-    var bookmarks = PlayPao.Controllers.HomeController.BookmarksByUser.TryGetValue(currentUser ?? "", out var b) ? b : new List<int>();
+    var bookmarks = PlayPao.Controllers.HomeController.BookmarksByUser.TryGetValue(currentUser ?? "", out var b) ? b : new
+    List<int>();
 }
 @using System.Globalization
 @using System.Collections.Generic
 @model IEnumerable<Event>
 
 <style>
-.badge-full{
-  background:#f3f4f6; color:#374151;
-  border-radius:12px; padding:2px 10px;
-  font-size:12px; font-weight:700;
-}
-.btn-join{
-  background:#FF742B; color:#fff;
-  border:none; border-radius:999px;
-  padding:.4rem .9rem; cursor:pointer;
-}
-.btn-join.disabled{
-  background:#e5e7eb; color:#6b7280; cursor:not-allowed;
-}
+    .badge-full {
+        background: #f3f4f6;
+        color: #374151;
+        border-radius: 12px;
+        padding: 2px 10px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .btn-join {
+        background: #FF742B;
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: .4rem .9rem;
+        cursor: pointer;
+    }
+
+    .btn-join.disabled {
+        background: #e5e7eb;
+        color: #6b7280;
+        cursor: not-allowed;
+    }
 </style>
 
 <div class="flex flex-col gap-1 text-center">
     <div class="flex items-center gap-1">
-        <form method="get" asp-controller="Home" asp-action="Index" style="display:flex; gap:0.5rem; flex:1;">
-            <input class="input-theme-full" type="text" name="search" placeholder="Search events..." value="@ViewBag.Search">
-            <button type="submit" style="padding:0.5rem 1rem; background:#FF742B; color:#fff; border:none; border-radius:4px; cursor:pointer;">Search</button>
+        <form method="get" asp-controller="Home" asp-action="Index" class="search-form">
+            <input class="input-theme-full" type="text" name="search" placeholder="Search events..."
+                value="@ViewBag.Search">
+            <button type="submit"
+                style="padding:0.5rem 1rem; background:#FF742B; color:#fff; border:none; border-radius:4px; cursor:pointer;">Search</button>
         </form>
         @if (!string.IsNullOrWhiteSpace(currentUser))
         {
@@ -62,10 +75,11 @@
             var isFull = eventItem.CurrentMembers >= eventItem.Member;
 
             <div onclick="location.href='@Url.Action("Detail", "Event", new { id = eventItem.Id })'"
-                 style="display:flex; box-shadow:0 0 5px rgb(0 0 0 / 0.2); padding:1rem; border-radius:0.5rem; cursor:pointer;">
+                style="display:flex; box-shadow:0 0 5px rgb(0 0 0 / 0.2); padding:1rem; border-radius:0.5rem; cursor:pointer;">
                 <img src="@(string.IsNullOrEmpty(eventItem.ImagePath) ? "https://i.ytimg.com/vi/N_Fb4x-OAzE/oardefault.jpg" : eventItem.ImagePath)"
-                     alt="" style="height:110px; width:200px; border-radius:8px;">
-                <div style="padding-top:8px; padding-bottom:8px; padding-right:14px; padding-left:14px; gap:8px; width:100%; margin-right:8px">
+                    alt="" style="height:110px; width:200px; border-radius:8px;">
+                <div
+                    style="padding-top:8px; padding-bottom:8px; padding-right:14px; padding-left:14px; gap:8px; width:100%; margin-right:8px">
                     <h5 style="color:#FF742B">
                         @eventItem.Date.ToString("dddd, MMMM d, yyyy")
                         @eventItem.Time.Hours.ToString("D2"):@eventItem.Time.Minutes.ToString("D2")
@@ -85,7 +99,8 @@
                     else
                     {
                         var isBookmarked = bookmarks.Contains(eventItem.Id);
-                        <form method="post" asp-controller="Home" asp-action="ToggleBookmark" asp-route-eventId="@eventItem.Id" onclick="event.stopPropagation();" style="background:none; border:none; padding:0; margin:0;">
+                        <form method="post" asp-controller="Home" asp-action="ToggleBookmark" asp-route-eventId="@eventItem.Id"
+                            onclick="event.stopPropagation();" style="background:none; border:none; padding:0; margin:0;">
                             @Html.AntiForgeryToken()
                             <button type="submit" style="background:none; border:none; cursor:pointer; padding:0;">
                                 <i data-lucide="bookmark" style="color: @(isBookmarked ? "#FF742B" : "#6b7280")"></i>
@@ -100,7 +115,8 @@
                     <div class="flex gap-2">
                         @if (!string.IsNullOrEmpty(currentUser) && currentUser != eventItem.Creator)
                         {
-                            var existingRequest = ((List<EventJoinRequest>)ViewBag.JoinRequests)?.FirstOrDefault(r => r.EventId == eventItem.Id && r.User == currentUser);
+                            var existingRequest = ((List<EventJoinRequest>)ViewBag.JoinRequests)?.FirstOrDefault(r => r.EventId ==
+                            eventItem.Id && r.User == currentUser);
                             var isJoined = eventItem.JoinedUsers.Contains(currentUser);
 
                             if (isJoined)
@@ -127,11 +143,8 @@
                             }
                             else
                             {
-                                <form method="post"
-                                      asp-controller="Event"
-                                      asp-action="RequestJoin"
-                                      asp-route-eventId="@eventItem.Id"
-                                      onclick="event.stopPropagation();">
+                                <form method="post" asp-controller="Event" asp-action="RequestJoin" asp-route-eventId="@eventItem.Id"
+                                    onclick="event.stopPropagation();">
                                     @Html.AntiForgeryToken()
                                     <button type="submit" class="btn-join">Request to Join</button>
                                 </form>

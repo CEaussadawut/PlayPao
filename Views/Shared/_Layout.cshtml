@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="~/PlayPao.styles.css" asp-append-version="true" />
 </head>
 
-<body class="flex">
+<!body>
     <header class="h-screen flex flex-col justify-between">
         <a asp-controller="Home" asp-action="Index" class="p-1 no-underline" style="color: black;">
             <div class="flex gap-0.5 items-center">
@@ -66,8 +66,7 @@
             </button>
         </nav>
 
-        <a asp-controller="Home" asp-action="Profile" class="inline-block"
-            style="text-decoration:none; color:black;">
+        <a asp-controller="Home" asp-action="Profile" class="inline-block" style="text-decoration:none; color:black;">
             @{
                 var userName = Context.Session.GetString("User");
                 var avatarSess = Context.Session.GetString("AvatarUrl");
@@ -80,50 +79,43 @@
                 <p>@(isLoggedIn? userName : "Not login")</p>
             </div>
         </a>
-
-
     </header>
 
-    <main role="main" style="height: calc(100vh - 2rem); overflow-y: auto; overflow-x: hidden;">
+    <main role="main">
         @RenderBody()
     </main>
 
-    @* <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - PlayPao - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer> *@
+    <footer class="mobile-nav">
+        <a asp-controller="Home" asp-action="Index" class="nav-item" style="color:black;">
+            <i data-lucide="home"></i>
+        </a>
+        <a asp-controller="Event" asp-action="MyEvents" class="nav-item" style="color:black;">
+            <i data-lucide="bookmark-check"></i>
+        </a>
+        <a asp-controller="Event" asp-action="CreateEvent" class="nav-item" style="color:black;">
+            <i data-lucide="plus-circle"></i>
+        </a>
+        <a asp-controller="Home" asp-action="Bookmark" class="nav-item" style="color:black;">
+            <i data-lucide="bookmark"></i>
+        </a>
+        <a asp-controller="Home" asp-action="Ticket" class="nav-item" style="color:black;">
+            <i data-lucide="ticket-check"></i>
+        </a>
+        <a asp-controller="Home" asp-action="Profile" class="nav-item" style="color:black;">
+            <i data-lucide="user"></i>
+        </a>
+    </footer>
 
     @if (currentPath != "/home/aboutus")
     {
         <aside class="flex flex-col gap-1 justify-between" style="height: calc(100vh - 2rem); overflow-y: auto;">
-            <div class="flex flex-col gap-1">
-                <div class="flex items-center justify-between">
-                    <p>Upcoming</p>
-                    <a asp-controller="Home" asp-action="Index" class="text-theme">See All</a>
-                </div>
 
-                @await Component.InvokeAsync("UpcomingEvents")
+            <div class="flex items-center justify-between">
+                <p>Upcoming</p>
+                <a asp-controller="Home" asp-action="Index" class="text-theme">See All</a>
             </div>
 
-            <div class="flex flex-col gap-1">
-                <div class="flex items-center justify-between">
-                    <p>Message</p>
-                    <a asp-controller="Home" asp-action="Index" class="text-theme">See All</a>
-                </div>
-
-                <div class="flex flex-col gap-0.5">
-                    @for (var i = 0; i < 5; i++)
-                    {
-                        <div class="flex items-center gap-0.5">
-                            <img src="https://avatars.githubusercontent.com/u/53619535?v=4" alt="profile"
-                                class="rounded-full h-2">
-                            <p class="w-full">@(Context.Session.GetString("User") ?? "Guest")</p>
-                            <i data-lucide="message-circle"></i>
-                        </div>
-                    }
-                </div>
-            </div>
+            @await Component.InvokeAsync("UpcomingEvents")
         </aside>
     }
 
@@ -134,6 +126,6 @@
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-</body>
+</!body>
 
 </html>

@@ -3,7 +3,7 @@
 * {
   margin: 0;
   padding: 0;
-  border: 0;
+  box-sizing: border-box;
 }
 
 html {
@@ -75,6 +75,7 @@ button {
 
 .button-theme {
   width: 380px;
+  max-width: 100%;
   color: #FFF;
 
   padding-top: 0.5rem;
@@ -89,6 +90,7 @@ button {
 
 .button-theme-large {
   width: 720px;
+  max-width: 100%;
   color: #FFF;
 
   padding-top: 0.5rem;
@@ -103,6 +105,7 @@ button {
 
 .button-theme-sm {
   width: 200px;
+  max-width: 100%;
   color: #FFF;
 
   padding-top: 0.5rem;
@@ -117,6 +120,7 @@ button {
 
 .input-theme {
   width: 360px;
+  max-width: 100%;
   height: 40px;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -128,6 +132,7 @@ button {
 
 .input-theme-large {
   width: 720px;
+  max-width: 100%;
   height: 40px;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -139,6 +144,7 @@ button {
 
 .input-theme-description {
   width: 720px;
+  max-width: 100%;
   height: 120px;
   padding: 1rem;
   border-radius: 8px;
@@ -149,6 +155,7 @@ button {
 
 .input-theme-image {
   width: 720px;
+  max-width: 100%;
   height: 40px;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -272,6 +279,13 @@ button {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .event-content {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }
 
 .event-card {
@@ -405,4 +419,17 @@ button {
   margin: 0.25rem 0 0 0;
   font-size: 0.875rem;
   color: #666;
+}
+
+.search-form {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+@media (max-width: 767px) {
+  .search-form {
+    flex: none;
+    width: calc(100vw - 5rem);
+  }
 }
